@@ -1,0 +1,14 @@
+{
+  "spec_dir": "src",
+  "spec_files": [
+    "**/*.test.*"
+  ],
+  "helpers": [
+    "../spec/support/babel.js",
+    "testSupport/jsdom.ts",
+    "testSupport/exclude.ts",
+    "testSupport/rtl.ts"
+  ],
+  "stopSpecOnExpectationFailure": false,
+  "random": true
+}

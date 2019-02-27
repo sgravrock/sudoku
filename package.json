@@ -15,7 +15,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "NODE_ENV=test jasmine",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -26,5 +26,20 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "@babel/register": "^7.0.0",
+    "@types/ignore-styles": "^5.0.0",
+    "@types/jasmine": "^3.3.9",
+    "@types/jsdom": "^12.2.2",
+    "ignore-styles": "^5.0.1",
+    "jasmine": "^3.3.1",
+    "jsdom": "^13.2.0",
+    "react-testing-library": "^6.0.0"
+  },
+  "babel": {
+    "presets": [
+      "react-app"
+    ]
+  }
 }
