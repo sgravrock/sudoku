@@ -1,0 +1,19 @@
+.Grid {
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+
+.Grid td {
+	width: 3em;
+	height: 3em;
+	border: 1px solid black;
+	text-align: center;
+}
+
+.Grid td:nth-child(3), .Grid td:nth-child(6) {
+	border-right-width: 3px;
+}
+
+.Grid tr:nth-child(3) td, .Grid tr:nth-child(6) td {
+	border-bottom-width: 3px;
+}

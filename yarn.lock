@@ -7994,6 +7994,12 @@ stylehacks@^4.0.0:
     postcss "^7.0.0"
     postcss-selector-parser "^3.0.0"
 
+sudoku@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/sudoku/-/sudoku-0.0.2.tgz#b1c82927ffabc0243ec76c212824c3f1f3e69034"
+  dependencies:
+    underscore "= 1.1.6"
+
 supports-color@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"
@@ -8271,6 +8277,10 @@ uglify-js@3.4.x, uglify-js@^3.1.4:
   dependencies:
     commander "~2.17.1"
     source-map "~0.6.1"
+
+"underscore@= 1.1.6":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.1.6.tgz#6868da1bdd72d75285be0b4e50f228e70d001a2c"
 
 unicode-canonical-property-names-ecmascript@^1.0.4:
   version "1.0.4"
