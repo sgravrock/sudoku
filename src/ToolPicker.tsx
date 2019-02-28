@@ -2,7 +2,7 @@ import React, {createContext, useContext} from 'react';
 // @ts-ignore
 import classNames from 'class-names';
 
-interface Tool {
+export interface Tool {
 	n: number;
 	pencil: boolean;
 }

@@ -20,6 +20,22 @@ describe('Game', () => {
 		expect(button().checked).toEqual(true);
 		expect(container.querySelectorAll('input[type=radio][checked]').length).toEqual(1);
 	});
+
+	describe('When a grid cell is clicked', () => {
+		it('fills the cell with the selected number', () => {
+			const puzzle = [...arbitraryPuzzle];
+			puzzle[0] = 2;
+			const {container} = renderSubject({puzzle});
+
+			const regular = container.querySelector('.NumberPicker-regular') as HTMLElement;
+			const button = RTL.queryByLabelText(regular, '1', ) as HTMLInputElement;
+			button.click();
+
+			const cell = () => container.querySelector('.Grid td') as HTMLElement;
+			cell().click();
+			expect(cell().textContent).toEqual('1');
+		});
+	});
 });
 
 interface OptionalProps {
@@ -30,7 +46,7 @@ function renderSubject(props: OptionalProps) {
 	return RTL.render(<Game puzzle={props.puzzle || arbitraryPuzzle} />);
 }
 
-const arbitraryPuzzle = [
+const arbitraryPuzzle: (number | null)[] = [
 	null, null, null, null, null, null, null, null, null,
 	null, null, null, null, null, null, null, null, null,
 	null, null, null, null, null, null, null, null, null,
