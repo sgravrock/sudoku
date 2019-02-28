@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {createContext, useContext} from 'react';
 // @ts-ignore
 import classNames from 'class-names';
 
@@ -7,52 +7,29 @@ interface Tool {
 	pencil: boolean;
 }
 
-interface ToolPickerProps {
-	selectedTool: Tool;
-	selectTool: (tool: Tool) => void;
-}
+type SelectedToolContextValue = [Tool, (tool: Tool) => void];
 
-const ToolPicker: React.FunctionComponent<ToolPickerProps> = props => {
+export const SelectedToolContext = createContext<SelectedToolContextValue>(null!);
+
+const ToolPicker: React.FunctionComponent<{}> = props => {
 	return (
 		<div className="ToolPicker">
-			<NumberPicker
-				pencil={false}
-				selectedNum={props.selectedTool.pencil ? null : props.selectedTool.n}
-				selectTool={props.selectTool}
-			/>
-			<NumberPicker
-				pencil={true}
-				selectedNum={props.selectedTool.pencil ? props.selectedTool.n: null}
-				selectTool={props.selectTool}
-			/>
+			<NumberPicker pencil={false} />
+			<NumberPicker pencil={true} />
 		</div>
 	);
 };
 
-interface NumberPickerProps {
-	pencil: boolean;
-	selectedNum: number | null;
-	selectTool: (tool: Tool) => void;
-}
-
-const NumberPicker: React.FunctionComponent<NumberPickerProps> = props => {
+const NumberPicker: React.FunctionComponent<{pencil: boolean}> = props => {
 	const classes = classNames(
 		'NumberPicker',
 		{'NumberPicker-pencil': props.pencil},
 		{'NumberPicker-regular': !props.pencil},
 	);
 
-	function selectNum(n: number) {
-		props.selectTool({n, pencil: props.pencil});
-	}
-
 	function cell(n: number) {
 		return (
-			<PickerCell
-				n={n}
-				selected={n === props.selectedNum}
-				select={() => selectNum(n)}
-			/>
+			<PickerCell tool={{n, pencil: props.pencil}} />
 		)
 	}
 
@@ -82,22 +59,20 @@ const NumberPicker: React.FunctionComponent<NumberPickerProps> = props => {
 	);
 };
 
-interface PickerCellProps {
-	n: number;
-	selected: boolean;
-	select: () => void;
-}
+const PickerCell: React.FunctionComponent<{tool: Tool}> = props => {
+	const [selectedTool, selectTool] = useContext(SelectedToolContext);
+	const checked = props.tool.n === selectedTool.n &&
+		props.tool.pencil === selectedTool.pencil;
 
-const PickerCell: React.FunctionComponent<PickerCellProps> = props => {
 	return (
 		<td>
 			<label>
 				<input
 					type="radio"
-					checked={props.selected}
-					onChange={props.select}
+					checked={checked}
+					onChange={() => selectTool(props.tool)}
 				/>
-				{props.n}
+				{props.tool.n}
 			</label>
 		</td>
 	);
