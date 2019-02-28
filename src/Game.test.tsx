@@ -43,7 +43,7 @@ interface OptionalProps {
 }
 
 function renderSubject(props: OptionalProps) {
-	return RTL.render(<Game puzzle={props.puzzle || arbitraryPuzzle} />);
+	return RTL.render(<Game puzzleData={props.puzzle || arbitraryPuzzle} />);
 }
 
 const arbitraryPuzzle: (number | null)[] = [

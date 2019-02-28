@@ -5,7 +5,7 @@ import './App.css';
 import {Game} from "./Game";
 
 const App: React.FunctionComponent<{}> = props => {
-	return <Game puzzle={sudoku.makepuzzle()} />;
+	return <Game puzzleData={sudoku.makepuzzle()} />;
 };
 
 export {App};

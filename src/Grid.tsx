@@ -1,7 +1,6 @@
 import React from "react";
 import './Grid.css';
-
-type Puzzle = (number | null)[];
+import {Puzzle} from "./Puzzle";
 
 const nine = Object.freeze([0, 1, 2, 3, 4, 5, 6, 7, 8]);
 
@@ -50,19 +49,17 @@ const GridRow: React.FunctionComponent<GridRowProps> = props => {
 };
 
 interface GridCellProps {
-	puzzle: (number | null)[];
+	puzzle: Puzzle;
 	x: number;
 	y: number;
 	onClick: (x: number, y: number) => void;
 }
 
 const GridCell: React.FunctionComponent<GridCellProps> = props => {
-	const onClick = () => {
-		console.log("clicky")
-		props.onClick(props.x, props.y);
-	}
 	return (
-		<td onClick={onClick}>{props.puzzle[9 * props.y + props.x]}</td>
+		<td onClick={() => props.onClick(props.x, props.y)}>
+			{props.puzzle.cell(props.x, props.y)}
+		</td>
 	);
 };
 
