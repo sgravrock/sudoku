@@ -2,10 +2,10 @@ import React from 'react';
 // @ts-ignore
 import sudoku from 'sudoku';
 import './App.css';
-import {Grid} from "./Grid";
+import {Game} from "./Game";
 
 const App: React.FunctionComponent<{}> = props => {
-	return <Grid puzzle={sudoku.makepuzzle()} />;
+	return <Game puzzle={sudoku.makepuzzle()} />;
 };
 
 export {App};
