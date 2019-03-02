@@ -44,6 +44,41 @@ describe('Game', () => {
 			});
 		});
 
+		describe('With a pencil tool selected', () => {
+			it('pencils in the selected number', () => {
+				const puzzle = [...arbitraryPuzzle];
+				puzzle[0] = null;
+				const {container} = renderSubject({puzzle});
+
+				selectPencilTool(container, 1);
+				const cell = clickFirstCell(container);
+				expect(cell.textContent).toEqual('(1)');
+			});
+
+			it('does not change cells with given values', () => {
+				const puzzle = [...arbitraryPuzzle];
+				puzzle[0] = 5;
+				const {container} = renderSubject({puzzle});
+
+				selectPencilTool(container, 1);
+				const cell = clickFirstCell(container);
+				expect(cell.textContent).toEqual('6');
+			});
+
+			it('does not change cells with entered regular numbers', () => {
+				const puzzle = [...arbitraryPuzzle];
+				puzzle[0] = null;
+				const {container} = renderSubject({puzzle});
+
+				selectRegularNumTool(container, 1);
+				clickFirstCell(container);
+				selectPencilTool(container, 2);
+				const cell = clickFirstCell(container);
+				expect(cell.textContent).toEqual('1');
+			});
+
+		});
+
 		describe('With the erase tool selected', () => {
 			it('erases the cell', () => {
 				const puzzle = [...arbitraryPuzzle];
@@ -74,6 +109,12 @@ describe('Game', () => {
 function selectRegularNumTool(container: HTMLElement, num: number) {
 	const regular = container.querySelector('.NumberPicker-regular') as HTMLElement;
 	const button = RTL.queryByLabelText(regular, num + '',)!;
+	button.click();
+}
+
+function selectPencilTool(container: HTMLElement, num: number) {
+	const pencil = container.querySelector('.NumberPicker-pencil') as HTMLElement;
+	const button = RTL.queryByLabelText(pencil, num + '',)!;
 	button.click();
 }
 

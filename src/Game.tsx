@@ -14,7 +14,9 @@ const Game: React.FunctionComponent<Props> = props => {
 	function onCellClick(x: number, y: number) {
 		switch (tool.type) {
 			case 'number':
-				setPuzzle(puzzle.setCell(x, y, tool.n));
+				if (!(tool.pencil && puzzle.hasNonPencilEntry(x, y))) {
+					setPuzzle(puzzle.setCell(x, y, tool));
+				}
 				break;
 			case 'eraser': {
 				setPuzzle(puzzle.setCell(x, y, null));
