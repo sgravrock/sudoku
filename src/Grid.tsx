@@ -56,9 +56,18 @@ interface GridCellProps {
 }
 
 const GridCell: React.FunctionComponent<GridCellProps> = props => {
+	const cell = props.puzzle.cell(props.x, props.y);
+	const className = cell.mutable ? '' : 'GridCell-immutable';
+
+	function onClick() {
+		if (cell.mutable) {
+			props.onClick(props.x, props.y);
+		}
+	}
+
 	return (
-		<td onClick={() => props.onClick(props.x, props.y)}>
-			{props.puzzle.cell(props.x, props.y)}
+		<td className={className} onClick={onClick}>
+			{cell.value}
 		</td>
 	);
 };

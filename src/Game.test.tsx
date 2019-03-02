@@ -24,7 +24,6 @@ describe('Game', () => {
 	describe('When a grid cell is clicked', () => {
 		it('fills the cell with the selected number', () => {
 			const puzzle = [...arbitraryPuzzle];
-			puzzle[0] = 2;
 			const {container} = renderSubject({puzzle});
 
 			const regular = container.querySelector('.NumberPicker-regular') as HTMLElement;
@@ -34,6 +33,20 @@ describe('Game', () => {
 			const cell = () => container.querySelector('.Grid td') as HTMLElement;
 			cell().click();
 			expect(cell().textContent).toEqual('1');
+		});
+
+		it('does not change cells with given values', () => {
+			const puzzle = [...arbitraryPuzzle];
+			puzzle[0] = 2;
+			const {container} = renderSubject({puzzle});
+
+			const regular = container.querySelector('.NumberPicker-regular') as HTMLElement;
+			const button = RTL.queryByLabelText(regular, '1', ) as HTMLInputElement;
+			button.click();
+
+			const cell = () => container.querySelector('.Grid td') as HTMLElement;
+			cell().click();
+			expect(cell().textContent).toEqual('2');
 		});
 	});
 });

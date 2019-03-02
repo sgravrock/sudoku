@@ -8,7 +8,7 @@ interface Props {
 }
 
 const Game: React.FunctionComponent<Props> = props => {
-	const [puzzle, setPuzzle] = useState(new Puzzle(props.puzzleData));
+	const [puzzle, setPuzzle] = useState(Puzzle.fromRawCells(props.puzzleData));
 	const [tool, selectTool] = useState({n: 1, pencil: false});
 
 	function onCellClick(x: number, y: number) {
