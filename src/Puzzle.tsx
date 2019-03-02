@@ -26,7 +26,7 @@ export class Puzzle {
 		return this._cells[9 * y + x];
 	}
 
-	setCell(x: number, y: number, value: number): Puzzle {
+	setCell(x: number, y: number, value: number|null): Puzzle {
 		const newCells = [...this._cells];
 		newCells[9 * y + x] = {value, mutable: true};
 		return new Puzzle(newCells);

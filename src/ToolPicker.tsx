@@ -1,11 +1,19 @@
 import React, {createContext, useContext} from 'react';
 // @ts-ignore
 import classNames from 'class-names';
+import {shallowEq} from "./equality";
 
-export interface Tool {
+interface NumberTool {
+	type: 'number';
 	n: number;
 	pencil: boolean;
 }
+
+interface EraserTool {
+	type: 'eraser';
+}
+
+export type Tool = NumberTool | EraserTool;
 
 type SelectedToolContextValue = [Tool, (tool: Tool) => void];
 
@@ -16,6 +24,7 @@ const ToolPicker: React.FunctionComponent<{}> = props => {
 		<div className="ToolPicker">
 			<NumberPicker pencil={false} />
 			<NumberPicker pencil={true} />
+			<ToolButton tool={{type: 'eraser'}} />
 		</div>
 	);
 };
@@ -29,8 +38,10 @@ const NumberPicker: React.FunctionComponent<{pencil: boolean}> = props => {
 
 	function cell(n: number) {
 		return (
-			<PickerCell tool={{n, pencil: props.pencil}} />
-		)
+			<td>
+				<ToolButton tool={{type: 'number', n, pencil: props.pencil}} />
+			</td>
+		);
 	}
 
 	return (
@@ -59,22 +70,27 @@ const NumberPicker: React.FunctionComponent<{pencil: boolean}> = props => {
 	);
 };
 
-const PickerCell: React.FunctionComponent<{tool: Tool}> = props => {
+export const ToolButton: React.FunctionComponent<{tool: Tool}> = props => {
 	const [selectedTool, selectTool] = useContext(SelectedToolContext);
-	const checked = props.tool.n === selectedTool.n &&
-		props.tool.pencil === selectedTool.pencil;
+	const checked = shallowEq(props.tool, selectedTool);
+	function text() {
+		switch (props.tool.type) {
+			case 'number':
+				return props.tool.n;
+			case 'eraser':
+				return 'Erase';
+		}
+	}
 
 	return (
-		<td>
-			<label>
-				<input
-					type="radio"
-					checked={checked}
-					onChange={() => selectTool(props.tool)}
-				/>
-				{props.tool.n}
-			</label>
-		</td>
+		<label>
+			<input
+				type="radio"
+				checked={checked}
+				onChange={() => selectTool(props.tool)}
+			/>
+			{text()}
+		</label>
 	);
 };
 

@@ -22,34 +22,71 @@ describe('Game', () => {
 	});
 
 	describe('When a grid cell is clicked', () => {
-		it('fills the cell with the selected number', () => {
-			const puzzle = [...arbitraryPuzzle];
-			const {container} = renderSubject({puzzle});
+		describe('With a number tool selected', () => {
+			it('fills the cell with the selected number', () => {
+				const puzzle = [...arbitraryPuzzle];
+				puzzle[0] = null;
+				const {container} = renderSubject({puzzle});
 
-			const regular = container.querySelector('.NumberPicker-regular') as HTMLElement;
-			const button = RTL.queryByLabelText(regular, '1', ) as HTMLInputElement;
-			button.click();
+				selectRegularNumTool(container, 1);
+				const cell = clickFirstCell(container);
+				expect(cell.textContent).toEqual('1');
+			});
 
-			const cell = () => container.querySelector('.Grid td') as HTMLElement;
-			cell().click();
-			expect(cell().textContent).toEqual('1');
+			it('does not change cells with given values', () => {
+				const puzzle = [...arbitraryPuzzle];
+				puzzle[0] = 1; // becomes 2
+				const {container} = renderSubject({puzzle});
+
+				selectRegularNumTool(container, 1);
+				const cell = clickFirstCell(container);
+				expect(cell.textContent).toEqual('2');
+			});
 		});
 
-		it('does not change cells with given values', () => {
-			const puzzle = [...arbitraryPuzzle];
-			puzzle[0] = 1;
-			const {container} = renderSubject({puzzle});
+		describe('With the erase tool selected', () => {
+			it('erases the cell', () => {
+				const puzzle = [...arbitraryPuzzle];
+				puzzle[0] = null;
+				const {container} = renderSubject({puzzle});
 
-			const regular = container.querySelector('.NumberPicker-regular') as HTMLElement;
-			const button = RTL.queryByLabelText(regular, '1', ) as HTMLInputElement;
-			button.click();
+				selectRegularNumTool(container, 1);
+				clickFirstCell(container);
 
-			const cell = () => container.querySelector('.Grid td') as HTMLElement;
-			cell().click();
-			expect(cell().textContent).toEqual('2');
+				selectEraserTool(container);
+				const cell = clickFirstCell(container);
+				expect(cell.textContent).toEqual('');
+			});
+
+			it('does not erase cells with given values', () => {
+				const puzzle = [...arbitraryPuzzle];
+				puzzle[0] = 0;
+				const {container} = renderSubject({puzzle});
+
+				selectEraserTool(container);
+				const cell = clickFirstCell(container);
+				expect(cell.textContent).toEqual('1');
+			});
 		});
 	});
 });
+
+function selectRegularNumTool(container: HTMLElement, num: number) {
+	const regular = container.querySelector('.NumberPicker-regular') as HTMLElement;
+	const button = RTL.queryByLabelText(regular, num + '',)!;
+	button.click();
+}
+
+function selectEraserTool(container: HTMLElement) {
+	const button = RTL.queryByLabelText(container, 'Erase')!;
+	button.click();
+}
+
+function clickFirstCell(container: HTMLElement): HTMLElement {
+	const cell = () => container.querySelector('.Grid td') as HTMLElement;
+	cell().click();
+	return cell();
+}
 
 interface OptionalProps {
 	puzzle?: (number | null)[];
