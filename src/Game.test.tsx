@@ -37,7 +37,7 @@ describe('Game', () => {
 
 		it('does not change cells with given values', () => {
 			const puzzle = [...arbitraryPuzzle];
-			puzzle[0] = 2;
+			puzzle[0] = 1;
 			const {container} = renderSubject({puzzle});
 
 			const regular = container.querySelector('.NumberPicker-regular') as HTMLElement;

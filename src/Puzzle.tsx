@@ -7,7 +7,14 @@ export class Puzzle {
 	private readonly _cells: Cell[];
 
 	static fromRawCells(rawInput: (number|null)[]): Puzzle {
-		const cells = rawInput.map(value => ({value, mutable: value === null}));
+		const cells = rawInput.map(value => {
+			if (value === null) {
+				return {value: null, mutable: true};
+			} else {
+				// Inputs are 0-8. We want 1-9.
+				return {value: value + 1, mutable: false};
+			}
+		});
 		return new Puzzle(cells);
 	}
 
