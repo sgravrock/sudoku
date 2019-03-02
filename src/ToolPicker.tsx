@@ -1,7 +1,8 @@
-import React, {createContext, useContext} from 'react';
+import React, {createContext} from 'react';
 // @ts-ignore
 import classNames from 'class-names';
 import {shallowEq} from "./equality";
+import {useCheckedContext} from "./useCheckedContext";
 
 interface NumberTool {
 	type: 'number';
@@ -71,7 +72,7 @@ const NumberPicker: React.FunctionComponent<{pencil: boolean}> = props => {
 };
 
 export const ToolButton: React.FunctionComponent<{tool: Tool}> = props => {
-	const [selectedTool, selectTool] = useContext(SelectedToolContext);
+	const [selectedTool, selectTool] = useCheckedContext(SelectedToolContext);
 	const checked = shallowEq(props.tool, selectedTool);
 	function text() {
 		switch (props.tool.type) {

@@ -21,6 +21,22 @@ describe('Game', () => {
 		expect(container.querySelectorAll('input[type=radio][checked]').length).toEqual(1);
 	});
 
+	it('highlights cells with the currently selected number', () => {
+		const puzzle = [...arbitraryPuzzle];
+		puzzle[0] = 0;
+		puzzle[1] = 1;
+		const {container} = renderSubject({puzzle});
+		const cells = () => container.querySelectorAll('.Grid td');
+
+		selectRegularNumTool(container, 1);
+		expect(cells()[0]).toHaveClass('GridCell-current');
+		expect(cells()[1]).not.toHaveClass('GridCell-current');
+
+		selectPencilTool(container, 2);
+		expect(cells()[0]).not.toHaveClass('GridCell-current');
+		expect(cells()[1]).toHaveClass('GridCell-current');
+	});
+
 	describe('When a grid cell is clicked', () => {
 		describe('With a number tool selected', () => {
 			it('fills the cell with the selected number', () => {

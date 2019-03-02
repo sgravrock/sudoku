@@ -2,6 +2,7 @@ import React from 'react';
 import {render} from 'react-testing-library'
 import {Grid} from "./Grid";
 import {Puzzle} from "./Puzzle";
+import {SelectedToolContext, Tool} from './ToolPicker';
 
 describe('Grid', () => {
 	it('renders the specified puzzle', () => {
@@ -16,7 +17,7 @@ describe('Grid', () => {
 			null, null, null, null, null, null, null, 7, null,
 			null, null, null, null, null, null, null, null, 8
 		]);
-		const {container} = render(<Grid puzzle={puzzle} onCellClick={() => {}} />);
+		const {container} = renderGrid({puzzle});
 		const cellTexts = mapEls(container.querySelectorAll('tr'),
 			row => {
 				return mapEls(row.querySelectorAll('td'),
@@ -47,12 +48,24 @@ describe('Grid', () => {
 			null, null, null, null, null, null, null, null, null,
 			null, null, null, null, null, null, null, null, null
 		]);
-		const {container} = render(<Grid puzzle={puzzle} onCellClick={() => {}} />);
+		const {container} = renderGrid({puzzle});
 		const cells = container.querySelectorAll('td');
 		expect(cells[0]).toHaveClass('GridCell-immutable');
 		expect(cells[1]).not.toHaveClass('GridCell-immutable');
 	});
 });
+
+function renderGrid(props: {puzzle: Puzzle}) {
+	return render(
+		<SelectedToolContext.Provider value={[arbitraryTool(), () => {}]}>
+			<Grid puzzle={props.puzzle} onCellClick={() => {}} />)
+		</SelectedToolContext.Provider>
+	);
+}
+
+function arbitraryTool(): Tool {
+	return {type: 'eraser'};
+}
 
 function mapEls<T>(els: NodeListOf<HTMLElement>, tx: (el: HTMLElement) => T): T[] {
 	return Array.prototype.map.call(els, tx) as T[];

@@ -1,6 +1,10 @@
 import React from "react";
+// @ts-ignore
+import classNames from 'class-names';
 import './Grid.css';
 import {Puzzle} from "./Puzzle";
+import {SelectedToolContext} from "./ToolPicker";
+import {useCheckedContext} from "./useCheckedContext";
 
 const nine = Object.freeze([0, 1, 2, 3, 4, 5, 6, 7, 8]);
 
@@ -56,8 +60,16 @@ interface GridCellProps {
 }
 
 const GridCell: React.FunctionComponent<GridCellProps> = props => {
+	const [selectedTool] = useCheckedContext(SelectedToolContext);
 	const cell = props.puzzle.cell(props.x, props.y);
-	const className = cell.mutable ? '' : 'GridCell-immutable';
+
+	const className = classNames({
+		'GridCell-immutable': !cell.mutable,
+		'GridCell-current': selectedTool.type === 'number' &&
+			cell.entry &&
+			selectedTool.n === cell.entry.n
+	});
+
 	const text = (function() {
 		if (!cell.entry) {
 			return '';

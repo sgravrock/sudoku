@@ -19,6 +19,10 @@
 }
 
 .GridCell-immutable {
-	font-weight: bold;
 	background: #dddddd;
+}
+
+.GridCell-current {
+	color: blue;
+	font-weight: bold;
 }
