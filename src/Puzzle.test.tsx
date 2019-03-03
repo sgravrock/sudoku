@@ -14,9 +14,9 @@ describe('Puzzle', () => {
 	describe('setCell', () => {
 		it('returns a new puzzle with the cell set', () => {
 			const subject = Puzzle.fromRawCells(arbitraryRawData);
-			const result = subject.setCell(3, 5, {n: 7, pencil: true});
+			const result = subject.setCell(3, 5, {ns: [7], pencil: true});
 			expect(result.cell(3, 5)).toEqual({
-				entry: {n: 7, pencil: true},
+				entry: {ns: [7], pencil: true},
 				mutable: true}
 			);
 			expect(subject.cell(3, 5)).toEqual({entry: null, mutable: true});

@@ -2,7 +2,7 @@ import React from "react";
 // @ts-ignore
 import classNames from 'class-names';
 import './Grid.css';
-import {Puzzle} from "./Puzzle";
+import {Entry, Puzzle} from "./Puzzle";
 import {SelectedToolContext} from "./ToolPicker";
 import {useCheckedContext} from "./useCheckedContext";
 
@@ -66,15 +66,14 @@ const GridCell: React.FunctionComponent<GridCellProps> = props => {
 	const className = classNames({
 		'GridCell-immutable': !cell.mutable,
 		'GridCell-current': selectedTool.type === 'number' &&
-			cell.entry &&
-			selectedTool.n === cell.entry.n
+			cell.entry && entryHasNumber(cell.entry, selectedTool.n)
 	});
 
 	const text = (function() {
 		if (!cell.entry) {
 			return '';
 		} else if (cell.entry.pencil) {
-			return `(${cell.entry.n})`;
+			return `(${cell.entry.ns.join(',')})`;
 		} else {
 			return cell.entry.n;
 		}
@@ -92,5 +91,13 @@ const GridCell: React.FunctionComponent<GridCellProps> = props => {
 		</td>
 	);
 };
+
+function entryHasNumber(entry: Entry, n: number) {
+	if (entry.pencil) {
+		return entry.ns.includes(n);
+	} else {
+		return entry.n === n;
+	}
+}
 
 export {Grid};

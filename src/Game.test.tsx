@@ -71,6 +71,19 @@ describe('Game', () => {
 				expect(cell.textContent).toEqual('(1)');
 			});
 
+			it('allows multiple pencil marks in the same cell', () => {
+				const puzzle = [...arbitraryPuzzle];
+				puzzle[0] = null;
+				const {container} = renderSubject({puzzle});
+
+				selectPencilTool(container, 1);
+				clickFirstCell(container);
+				selectPencilTool(container, 2);
+				const cell = clickFirstCell(container);
+				expect(cell.textContent).toEqual('(1,2)');
+
+			});
+
 			it('does not change cells with given values', () => {
 				const puzzle = [...arbitraryPuzzle];
 				puzzle[0] = 5;

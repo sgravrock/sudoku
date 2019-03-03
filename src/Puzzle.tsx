@@ -1,7 +1,15 @@
-interface Entry {
+interface NonPencilEntry {
 	n: number;
-	pencil: boolean;
+	pencil: false;
 }
+
+interface PencilEntry {
+	ns: number[];
+	pencil: true;
+}
+
+export type Entry = NonPencilEntry | PencilEntry;
+
 interface Cell {
 	entry: Entry | null;
 	mutable: boolean;
@@ -11,7 +19,7 @@ export class Puzzle {
 	private readonly _cells: Cell[];
 
 	static fromRawCells(rawInput: (number|null)[]): Puzzle {
-		const cells = rawInput.map(n => {
+		const cells = rawInput.map<Cell>(n => {
 			if (n === null) {
 				return {entry: null, mutable: true};
 			} else {

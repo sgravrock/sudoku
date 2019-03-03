@@ -14,8 +14,10 @@ const Game: React.FunctionComponent<Props> = props => {
 	function onCellClick(x: number, y: number) {
 		switch (tool.type) {
 			case 'number':
-				if (!(tool.pencil && puzzle.hasNonPencilEntry(x, y))) {
-					setPuzzle(puzzle.setCell(x, y, tool));
+				if (!tool.pencil) {
+					setPuzzle(puzzle.setCell(x, y, {pencil: false, n: tool.n}));
+				} else {
+					setPuzzle(applyPencil(puzzle, x, y, tool.n));
 				}
 				break;
 			case 'eraser': {
@@ -32,5 +34,21 @@ const Game: React.FunctionComponent<Props> = props => {
 		</SelectedToolContext.Provider>
 	);
 };
+
+function applyPencil(puzzle: Puzzle, x: number, y: number, n: number): Puzzle {
+	let entry = puzzle.cell(x, y).entry;
+
+	if (entry && !entry.pencil) {
+		return puzzle;
+	}
+
+	if (entry) {
+		entry = {...entry, ns: [...entry.ns, n]};
+	} else {
+		entry = {pencil: true, ns: [n]};
+	}
+
+	return puzzle.setCell(x, y, entry);
+}
 
 export {Game};
