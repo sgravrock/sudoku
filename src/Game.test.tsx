@@ -133,6 +133,24 @@ describe('Game', () => {
 			});
 		});
 	});
+
+	it('supports undo', () => {
+		const puzzle = [...arbitraryPuzzle];
+		puzzle[0] = null;
+		const {container} = renderSubject({puzzle});
+
+		selectRegularNumTool(container, 1);
+		clickFirstCell(container);
+		selectRegularNumTool(container, 2);
+		clickFirstCell(container);
+
+		const undo = () => RTL.queryByText(container, 'Undo')!!.click();
+		undo();
+		expect(firstCell(container).textContent).toEqual('1');
+		undo();
+		expect(firstCell(container).textContent).toEqual('');
+
+	});
 });
 
 function selectRegularNumTool(container: HTMLElement, num: number) {
@@ -153,9 +171,12 @@ function selectEraserTool(container: HTMLElement) {
 }
 
 function clickFirstCell(container: HTMLElement): HTMLElement {
-	const cell = () => container.querySelector('.Grid td') as HTMLElement;
-	cell().click();
-	return cell();
+	firstCell(container).click();
+	return firstCell(container);
+}
+
+function firstCell(container: HTMLElement): HTMLElement {
+	return container.querySelector('.Grid td') as HTMLElement;
 }
 
 interface OptionalProps {
