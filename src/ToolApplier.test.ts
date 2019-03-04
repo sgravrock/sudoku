@@ -17,6 +17,35 @@ describe('ToolApplier', () => {
 				expect(result.cell(0, 0).entry).toEqual({n: 1, pencil: false});
 			});
 
+			it('removes same-number pencil marks in the same house', () => {
+				const puzzle = makePuzzle(null)
+					.setCell(0, 0, {ns: [2,3], pencil: true})
+					.setCell(1, 1, {ns: [2], pencil: true})
+					.setCell(3, 3, {ns: [2,3], pencil: true});
+				const result = applyTool(normal(2), 2, 2, puzzle);
+				expect(result.cell(0, 0).entry).toEqual({ns: [3], pencil: true});
+				expect(result.cell(1, 1).entry).toBeNull();
+				expect(result.cell(3, 3).entry).toEqual({ns: [2,3], pencil: true});
+			});
+
+			it('removes same-number pencil marks in the same row', () => {
+				const puzzle = makePuzzle(null)
+					.setCell(4, 0, {ns: [2,3], pencil: true})
+					.setCell(3, 0, {ns: [2], pencil: true});
+				const result = applyTool(normal(2), 2, 0, puzzle);
+				expect(result.cell(4, 0).entry).toEqual({ns: [3], pencil: true});
+				expect(result.cell(3, 0).entry).toBeNull();
+			});
+
+			it('removes same-number pencil marks in the same column', () => {
+				const puzzle = makePuzzle(null)
+					.setCell(0, 4, {ns: [2,3], pencil: true})
+					.setCell(0, 3, {ns: [2], pencil: true});
+				const result = applyTool(normal(2), 0, 2, puzzle);
+				expect(result.cell(0, 4).entry).toEqual({ns: [3], pencil: true});
+				expect(result.cell(0, 3).entry).toBeNull();
+			});
+
 			it('erases non-pencil entries that have the same number', () => {
 				const puzzle = makePuzzle(null).setCell(0, 0, {n: 1, pencil: false});
 				const result = applyTool(normal(1), 0, 0, puzzle);
