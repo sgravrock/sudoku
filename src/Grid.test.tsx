@@ -53,11 +53,37 @@ describe('Grid', () => {
 		expect(cells[0]).toHaveClass('GridCell-immutable');
 		expect(cells[1]).not.toHaveClass('GridCell-immutable');
 	});
+
+	it('marks pencil cells for the current tool', () => {
+		const puzzle = Puzzle.fromRawCells([
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null
+		]).setCell(0, 0, {ns: [1], pencil: true});
+		const tool = {type: 'number', n: 1, pencil: true};
+		const {container} = renderGrid({puzzle, tool});
+		const cells = container.querySelectorAll('td');
+		expect(cells[0]).toHaveClass('GridCell-current-pencil');
+		expect(cells[0]).not.toHaveClass('GridCell-current');
+		expect(cells[1]).not.toHaveClass('GridCell-current-pencil');
+	});
 });
 
-function renderGrid(props: {puzzle: Puzzle}) {
+interface Props {
+	puzzle: Puzzle;
+	tool?: Tool;
+}
+
+function renderGrid(props: Props) {
+	const tool = props.tool || arbitraryTool();
 	return render(
-		<SelectedToolContext.Provider value={[arbitraryTool(), () => {}]}>
+		<SelectedToolContext.Provider value={[tool, () => {}]}>
 			<Grid puzzle={props.puzzle} onCellClick={() => {}} />)
 		</SelectedToolContext.Provider>
 	);

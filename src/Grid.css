@@ -23,6 +23,11 @@
 }
 
 .GridCell-current {
-	color: blue;
+	background-color: yellow;
+	font-weight: bold;
+}
+
+.GridCell-current-pencil {
+	color: red;
 	font-weight: bold;
 }

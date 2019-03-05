@@ -63,10 +63,16 @@ const GridCell: React.FunctionComponent<GridCellProps> = props => {
 	const [selectedTool] = useCheckedContext(SelectedToolContext);
 	const cell = props.puzzle.cell(props.x, props.y);
 
+	const isCurrentNormal = selectedTool.type === 'number' &&
+		cell.entry && !cell.entry.pencil &&
+		cell.entry.n === selectedTool.n;
+	const isCurrentPencil = selectedTool.type === 'number' &&
+		cell.entry && cell.entry.pencil &&
+		cell.entry.ns.includes(selectedTool.n);
 	const className = classNames({
 		'GridCell-immutable': !cell.mutable,
-		'GridCell-current': selectedTool.type === 'number' &&
-			cell.entry && entryHasNumber(cell.entry, selectedTool.n)
+		'GridCell-current': isCurrentNormal,
+		'GridCell-current-pencil': isCurrentPencil
 	});
 
 	const text = (function() {
