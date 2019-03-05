@@ -48,4 +48,11 @@ export class Puzzle {
 		const entry = this._cells[9 * y + x].entry;
 		return entry !== null && !entry.pencil;
 	}
+
+	entriesWith(predicate: (e: Entry) => boolean): number {
+		return this._cells
+			.map(c => c.entry)
+			.filter(e => e && predicate(e))
+			.length
+	}
 }

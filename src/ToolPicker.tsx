@@ -3,6 +3,8 @@ import React, {createContext} from 'react';
 import classNames from 'class-names';
 import {shallowEq} from "./equality";
 import {useCheckedContext} from "./useCheckedContext";
+import {Puzzle} from "./Puzzle";
+import {IToolEnabler, ToolEnabler} from "./ToolEnabler";
 
 interface NumberTool {
 	type: 'number';
@@ -20,17 +22,22 @@ type SelectedToolContextValue = [Tool, (tool: Tool) => void];
 
 export const SelectedToolContext = createContext<SelectedToolContextValue>(null!);
 
-const ToolPicker: React.FunctionComponent<{}> = props => {
+const ToolPicker: React.FunctionComponent<{enabler: IToolEnabler}> = props => {
 	return (
 		<div className="ToolPicker">
-			<NumberPicker pencil={false} />
-			<NumberPicker pencil={true} />
-			<ToolButton tool={{type: 'eraser'}} />
+			<NumberPicker pencil={false} enabler={props.enabler} />
+			<NumberPicker pencil={true} enabler={props.enabler} />
+			<ToolButton tool={{type: 'eraser'}} enabler={props.enabler} />
 		</div>
 	);
 };
 
-const NumberPicker: React.FunctionComponent<{pencil: boolean}> = props => {
+interface NumberPickerProps {
+	pencil: boolean;
+	enabler: IToolEnabler;
+}
+
+const NumberPicker: React.FunctionComponent<NumberPickerProps> = props => {
 	const classes = classNames(
 		'NumberPicker',
 		{'NumberPicker-pencil': props.pencil},
@@ -40,7 +47,10 @@ const NumberPicker: React.FunctionComponent<{pencil: boolean}> = props => {
 	function cell(n: number) {
 		return (
 			<td>
-				<ToolButton tool={{type: 'number', n, pencil: props.pencil}} />
+				<ToolButton
+					tool={{type: 'number', n, pencil: props.pencil}}
+					enabler={props.enabler}
+				/>
 			</td>
 		);
 	}
@@ -71,7 +81,12 @@ const NumberPicker: React.FunctionComponent<{pencil: boolean}> = props => {
 	);
 };
 
-export const ToolButton: React.FunctionComponent<{tool: Tool}> = props => {
+interface ToolButtonProps {
+	tool: Tool;
+	enabler: IToolEnabler;
+}
+
+export const ToolButton: React.FunctionComponent<ToolButtonProps> = props => {
 	const [selectedTool, selectTool] = useCheckedContext(SelectedToolContext);
 	const checked = shallowEq(props.tool, selectedTool);
 	function text() {
@@ -89,6 +104,7 @@ export const ToolButton: React.FunctionComponent<{tool: Tool}> = props => {
 				type="radio"
 				checked={checked}
 				onChange={() => selectTool(props.tool)}
+				disabled={!props.enabler.isEnabled(props.tool)}
 			/>
 			{text()}
 		</label>

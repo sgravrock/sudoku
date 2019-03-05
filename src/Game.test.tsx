@@ -149,20 +149,67 @@ describe('Game', () => {
 		expect(firstCell(container).textContent).toEqual('1');
 		undo();
 		expect(firstCell(container).textContent).toEqual('');
+	});
 
+	it('disables numbers that are fully entered', () => {
+		const puzzle = [
+			null, 0, 0, 0, 0, 0, 0, 0, 0,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+		];
+
+		const {container} = renderSubject({puzzle});
+
+		selectRegularNumTool(container, 1);
+		clickFirstCell(container);
+		expect(regularNumButton(container, 1).disabled).toBeTruthy();
+		expect(regularNumButton(container, 1).disabled).toBeTruthy();
+	});
+
+	it('does not disable numbers when some entries are pencil marks', () => {
+		const puzzle = [
+			null, 1, 1, 1, 1, 1, 1, 1, 1,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+		];
+
+		const {container} = renderSubject({puzzle});
+
+		selectPencilTool(container, 1);
+		clickFirstCell(container);
+		expect(regularNumButton(container, 1).disabled).toBeFalsy();
+		expect(regularNumButton(container, 1).disabled).toBeFalsy();
 	});
 });
 
 function selectRegularNumTool(container: HTMLElement, num: number) {
+	regularNumButton(container, num).click();
+}
+
+function regularNumButton(container: HTMLElement, num: number): HTMLInputElement {
 	const regular = container.querySelector('.NumberPicker-regular') as HTMLElement;
-	const button = RTL.queryByLabelText(regular, num + '',)!;
-	button.click();
+	return RTL.queryByLabelText(regular, num + '',) as HTMLInputElement;
 }
 
 function selectPencilTool(container: HTMLElement, num: number) {
+	pencilButton(container, num).click();
+}
+
+function pencilButton(container: HTMLElement, num: number): HTMLInputElement {
 	const pencil = container.querySelector('.NumberPicker-pencil') as HTMLElement;
-	const button = RTL.queryByLabelText(pencil, num + '',)!;
-	button.click();
+	return RTL.queryByLabelText(pencil, num + '',) as HTMLInputElement;
 }
 
 function selectEraserTool(container: HTMLElement) {
