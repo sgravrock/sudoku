@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {Grid} from "./Grid";
 import {SelectedToolContext, Tool, ToolPicker} from "./ToolPicker";
 import {Puzzle} from "./Puzzle";
@@ -14,6 +14,21 @@ const Game: React.FunctionComponent<Props> = props => {
 	const [tool, selectTool] = useState<Tool>({type: 'number', n: 1, pencil: false});
 	const puzzle = puzzles[puzzles.length - 1];
 	const toolEnabler = useMemo(() => new ToolEnabler(puzzle), [puzzle]);
+
+	useEffect(() => {
+		function onKeyDown(e: KeyboardEvent) {
+			if (e.key === 'p' && tool.type === 'number') {
+				selectTool({...tool, pencil: !tool.pencil});
+			} else if (e.key >= '1' && e.key <= '9') {
+				const n = parseInt(e.key, 10);
+				const pencil = tool.type === 'number' ? !tool.pencil : false;
+				selectTool({type: 'number', n, pencil});
+			}
+		}
+
+		document.addEventListener('keydown', onKeyDown);
+		return () => document.removeEventListener('keydown', onKeyDown);
+	}, [tool, selectTool]);
 
 	function onCellClick(x: number, y: number) {
 		setPuzzles([...puzzles, applyTool(tool, x, y, puzzle)]);
