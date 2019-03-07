@@ -1,4 +1,4 @@
-import {Puzzle} from "./Puzzle";
+import {Puzzle} from "../Puzzle";
 import {Tool} from "./ToolPicker";
 
 export function applyTool(tool: Tool, x: number, y: number, puzzle: Puzzle): Puzzle {

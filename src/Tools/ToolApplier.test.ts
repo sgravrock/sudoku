@@ -1,4 +1,4 @@
-import {Entry, Puzzle} from "./Puzzle";
+import {Entry, Puzzle} from "../Puzzle";
 import {applyTool} from "./ToolApplier";
 import {Tool} from "./ToolPicker";
 

@@ -2,7 +2,7 @@ import React from 'react';
 import {Tool, SelectedToolContext, ToolButton} from "./ToolPicker";
 import * as RTL from 'react-testing-library'
 import {ToolEnabler} from "./ToolEnabler";
-import {Puzzle} from "./Puzzle";
+import {Puzzle} from "../Puzzle";
 
 describe('ToolPicker', () => {
 	describe('ToolButton', () => {

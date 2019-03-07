@@ -3,7 +3,7 @@ import React from "react";
 import classNames from 'class-names';
 import './Grid.css';
 import {Entry, Puzzle} from "./Puzzle";
-import {SelectedToolContext} from "./ToolPicker";
+import {SelectedToolContext} from "./Tools/ToolPicker";
 import {useCheckedContext} from "./useCheckedContext";
 
 const nine = Object.freeze([0, 1, 2, 3, 4, 5, 6, 7, 8]);

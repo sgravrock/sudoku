@@ -1,9 +1,9 @@
 import React, {createContext} from 'react';
 // @ts-ignore
 import classNames from 'class-names';
-import {shallowEq} from "./equality";
-import {useCheckedContext} from "./useCheckedContext";
-import {Puzzle} from "./Puzzle";
+import {shallowEq} from "../equality";
+import {useCheckedContext} from "../useCheckedContext";
+import {Puzzle} from "../Puzzle";
 import {IToolEnabler, ToolEnabler} from "./ToolEnabler";
 
 interface NumberTool {

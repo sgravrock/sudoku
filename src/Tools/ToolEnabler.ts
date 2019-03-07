@@ -1,4 +1,4 @@
-import {Entry, Puzzle} from "./Puzzle";
+import {Entry, Puzzle} from "../Puzzle";
 import {Tool} from "./ToolPicker";
 import {createContext} from "react";
 

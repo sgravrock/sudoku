@@ -2,7 +2,7 @@ import React from 'react';
 import {render} from 'react-testing-library'
 import {Grid} from "./Grid";
 import {Puzzle} from "./Puzzle";
-import {SelectedToolContext, Tool} from './ToolPicker';
+import {SelectedToolContext, Tool} from './Tools/ToolPicker';
 
 describe('Grid', () => {
 	it('renders the specified puzzle', () => {

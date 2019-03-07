@@ -1,6 +1,6 @@
 import {ToolEnabler} from "./ToolEnabler";
 import {Tool} from "./ToolPicker";
-import {Puzzle} from "./Puzzle";
+import {Puzzle} from "../Puzzle";
 
 describe('ToolEnabler', () => {
 	describe('isEnabled', () => {
