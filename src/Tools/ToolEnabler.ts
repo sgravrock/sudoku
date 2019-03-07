@@ -1,5 +1,5 @@
 import {Entry, Puzzle} from "../Puzzle";
-import {Tool} from "./ToolPicker";
+import {Tool} from "./index";
 import {createContext} from "react";
 
 export interface IToolEnabler {

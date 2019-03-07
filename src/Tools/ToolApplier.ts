@@ -1,5 +1,5 @@
 import {Puzzle} from "../Puzzle";
-import {Tool} from "./ToolPicker";
+import {Tool} from "./index";
 
 export function applyTool(tool: Tool, x: number, y: number, puzzle: Puzzle): Puzzle {
 	if (!puzzle.cell(x, y).mutable) {

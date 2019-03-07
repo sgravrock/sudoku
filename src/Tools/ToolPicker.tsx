@@ -3,20 +3,9 @@ import React, {createContext} from 'react';
 import classNames from 'class-names';
 import {shallowEq} from "../equality";
 import {useCheckedContext} from "../useCheckedContext";
-import {Puzzle} from "../Puzzle";
-import {IToolEnabler, ToolEnabler} from "./ToolEnabler";
+import {IToolEnabler} from "./ToolEnabler";
+import {Tool} from "./index";
 
-interface NumberTool {
-	type: 'number';
-	n: number;
-	pencil: boolean;
-}
-
-interface EraserTool {
-	type: 'eraser';
-}
-
-export type Tool = NumberTool | EraserTool;
 
 type SelectedToolContextValue = [Tool, (tool: Tool) => void];
 

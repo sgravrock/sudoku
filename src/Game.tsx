@@ -1,9 +1,10 @@
 import React, {useEffect, useMemo, useState} from "react";
 import {Grid} from "./Grid";
-import {SelectedToolContext, Tool, ToolPicker} from "./Tools/ToolPicker";
+import {SelectedToolContext, ToolPicker} from "./Tools/ToolPicker";
 import {Puzzle} from "./Puzzle";
 import {applyTool} from "./Tools/ToolApplier";
-import {ToolEnabler, ToolEnablerContext} from "./Tools/ToolEnabler";
+import {ToolEnabler} from "./Tools/ToolEnabler";
+import {Tool} from "./Tools";
 
 interface Props {
 	puzzleData: (number | null)[];
