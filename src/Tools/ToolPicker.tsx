@@ -91,6 +91,7 @@ export const ToolButton: React.FunctionComponent<ToolButtonProps> = props => {
 		<label>
 			<input
 				type="radio"
+				name="tool"
 				checked={checked}
 				onChange={() => selectTool(props.tool)}
 				disabled={!props.enabler.isEnabled(props.tool)}
