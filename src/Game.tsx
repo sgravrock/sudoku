@@ -5,6 +5,7 @@ import {Puzzle} from "./Puzzle";
 import {applyTool} from "./Tools/ToolApplier";
 import {ToolEnabler} from "./Tools/ToolEnabler";
 import {Tool} from "./Tools";
+import './Game.css';
 
 interface Props {
 	puzzleData: (number | null)[];
@@ -49,11 +50,17 @@ const Game: React.FunctionComponent<Props> = props => {
 
 	return (
 		<SelectedToolContext.Provider value={[tool, selectTool]}>
-			{puzzle.isSolved() ? <h1>Solved!</h1>: ''}
-			<Grid puzzle={puzzle} onCellClick={onCellClick} />
-			<ToolPicker enabler={toolEnabler} />
-			<button onClick={undo}>Undo</button>
-			<button onClick={reset}>Start Over</button>
+			<div className="Game">
+				<div className="Game-main">
+					{puzzle.isSolved() ? <h1>Solved!</h1> : ''}
+					<Grid puzzle={puzzle} onCellClick={onCellClick}/>
+				</div>
+				<div className="Game-tools">
+					<ToolPicker enabler={toolEnabler}/>
+					<button onClick={undo}>Undo</button>
+					<button onClick={reset}>Start Over</button>
+				</div>
+			</div>
 		</SelectedToolContext.Provider>
 	);
 };

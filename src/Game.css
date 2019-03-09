@@ -1,0 +1,14 @@
+.Game {
+	display: flex;
+	flex-direction: column;
+}
+
+@media screen and (min-width: 650px) {
+	.Game {
+		flex-direction: row;
+	}
+}
+
+.Game-main {
+	margin-right: 1em;
+}
