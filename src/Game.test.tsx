@@ -192,6 +192,35 @@ describe('Game', () => {
 		expect(regularNumButton(container, 1).disabled).toBeFalsy();
 		expect(regularNumButton(container, 1).disabled).toBeFalsy();
 	});
+
+	it('shows "Solved! when the puzzle is correctly solved', () => {
+		const puzzle = [
+			null, 2, 0, 8, 3, 1, 6, 4, 5,
+			8, 3, 4, 5, 6, 0, 2, 1, 7,
+			6, 5, 1, 2, 4, 7, 8, 3, 0,
+			1, 8, 7, 6, 0, 5, 4, 2, 3,
+			2, 0, 6, 4, 7, 3, 1, 5, 8,
+			3, 4, 5, 1, 2, 8, 0, 7, 6,
+			5, 1, 3, 0, 8, 4, 7, 6, 2,
+			4, 6, 8, 7, 5, 2, 3, 0, 1,
+			0, 7, 2, 3, 1, 6, 5, 8, 4
+		];
+		const {container} = renderSubject({puzzle});
+
+		selectPencilTool(container, 8);
+		clickFirstCell(container);
+		expect(container.textContent).not.toContain('Solved!');
+
+		selectRegularNumTool(container, 1);
+		clickFirstCell(container);
+		expect(container.textContent).not.toContain('Solved!');
+
+		selectEraserTool(container);
+		clickFirstCell(container);
+		selectRegularNumTool(container, 8);
+		clickFirstCell(container);
+		expect(container.textContent).toContain('Solved!');
+	});
 });
 
 function selectRegularNumTool(container: HTMLElement, num: number) {

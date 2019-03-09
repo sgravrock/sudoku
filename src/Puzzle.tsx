@@ -1,3 +1,7 @@
+// @ts-ignore
+import sudoku from 'sudoku';
+import {shallowEq} from "./equality";
+
 interface NonPencilEntry {
 	n: number;
 	pencil: false;
@@ -54,5 +58,21 @@ export class Puzzle {
 			.map(c => c.entry)
 			.filter(e => e && predicate(e))
 			.length
+	}
+
+	isSolved(): boolean {
+		const rawCells = this.toRawCells();
+		return shallowEq(rawCells, sudoku.solvepuzzle(rawCells));
+	}
+
+	toRawCells(): (number|null)[] {
+		return this._cells.map(cell => {
+			if (cell.entry && !cell.entry.pencil) {
+				// We have 1-9. Outputs are 0-8.
+				return cell.entry.n - 1;
+			} else {
+				return null;
+			}
+		});
 	}
 }

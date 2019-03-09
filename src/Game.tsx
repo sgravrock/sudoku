@@ -45,6 +45,7 @@ const Game: React.FunctionComponent<Props> = props => {
 
 	return (
 		<SelectedToolContext.Provider value={[tool, selectTool]}>
+			{puzzle.isSolved() ? <h1>Solved!</h1>: ''}
 			<Grid puzzle={puzzle} onCellClick={onCellClick} />
 			<ToolPicker enabler={toolEnabler} />
 			<button onClick={undo}>Undo</button>
