@@ -151,6 +151,25 @@ describe('Game', () => {
 		expect(firstCell(container).textContent).toEqual('');
 	});
 
+	it('can reset to the initial state', () => {
+		const puzzle = [...arbitraryPuzzle];
+		puzzle[0] = null;
+		const {container} = renderSubject({puzzle});
+
+		selectRegularNumTool(container, 1);
+		clickFirstCell(container);
+		selectEraserTool(container);
+		clickFirstCell(container);
+		selectRegularNumTool(container, 2);
+		clickFirstCell(container);
+
+		RTL.queryByText(container, 'Start Over')!!.click();
+		expect(firstCell(container).textContent).toEqual('');
+
+		RTL.queryByText(container, 'Undo')!!.click();
+		expect(firstCell(container).textContent).toEqual('2');
+	});
+
 	it('disables numbers that are fully entered', () => {
 		const puzzle = [
 			null, 0, 0, 0, 0, 0, 0, 0, 0,

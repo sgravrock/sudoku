@@ -43,12 +43,17 @@ const Game: React.FunctionComponent<Props> = props => {
 		}
 	}
 
+	function reset() {
+		setPuzzles([...puzzles, puzzles[0]]);
+	}
+
 	return (
 		<SelectedToolContext.Provider value={[tool, selectTool]}>
 			{puzzle.isSolved() ? <h1>Solved!</h1>: ''}
 			<Grid puzzle={puzzle} onCellClick={onCellClick} />
 			<ToolPicker enabler={toolEnabler} />
 			<button onClick={undo}>Undo</button>
+			<button onClick={reset}>Start Over</button>
 		</SelectedToolContext.Provider>
 	);
 };
