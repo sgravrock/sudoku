@@ -18,7 +18,7 @@ const Game: React.FunctionComponent<Props> = props => {
 	const toolEnabler = useMemo(() => new ToolEnabler(puzzle), [puzzle]);
 
 	useDocumentKeydown(
-		key => selectTool(nextTool(tool, key)),
+		key => selectTool(nextToolFromKeystroke(tool, key)),
 		[tool, selectTool]
 	);
 
@@ -55,7 +55,7 @@ const Game: React.FunctionComponent<Props> = props => {
 	);
 };
 
-function nextTool(tool: Tool, key: string): Tool {
+export function nextToolFromKeystroke(tool: Tool, key: string): Tool {
 	if (key === 'p' && tool.type === 'number') {
 		return {...tool, pencil: !tool.pencil};
 	} else if (key >= '1' && key <= '9') {
@@ -68,6 +68,7 @@ function nextTool(tool: Tool, key: string): Tool {
 }
 
 function useDocumentKeydown(handler: (key: string) => void, deps: any[]): void {
+	// Warning: there's currently no test coverage for this.
 	useEffect(() => {
 		function onKeyDown(e: KeyboardEvent) {
 			handler(e.key);

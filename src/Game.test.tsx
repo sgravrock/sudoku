@@ -1,6 +1,7 @@
 import React from 'react';
 import * as RTL from 'react-testing-library'
-import {Game} from "./Game";
+import {Game, nextToolFromKeystroke} from "./Game";
+import {Tool} from "./Tools";
 
 
 describe('Game', () => {
@@ -229,6 +230,64 @@ describe('Game', () => {
 		eraseFirstCell(container);
 		enterRegularNumInFirstCell(container, 8);
 		expect(container.textContent).toContain('Solved!');
+	});
+
+	describe('nextToolFromKeystroke', () => {
+		describe('When the key is p', () => {
+			describe('And a number tool is selected', () => {
+				it('toggles the pencil-ness of the tool', () => {
+					const pencilTool: Tool = {
+						type: 'number', n: 3, pencil: true
+					};
+					const regularTool: Tool = {
+						...pencilTool, pencil: false
+					};
+					expect(nextToolFromKeystroke(regularTool, 'p')).toEqual(pencilTool);
+					expect(nextToolFromKeystroke(pencilTool, 'p')).toEqual(regularTool);
+				});
+			});
+
+			describe('And a non-number tool is selected', () => {
+				it('returns the currently selected tool', () => {
+					const tool: Tool = {type: 'eraser'};
+					expect(nextToolFromKeystroke(tool, 'p')).toEqual(tool);
+				});
+			});
+		});
+
+		describe('When the key is a digit', () => {
+			describe('And the same number is selected', () => {
+				it('toggles the pencil-ness of the tool', () => {
+					const pencilTool: Tool = {
+						type: 'number', n: 4, pencil: true
+					};
+					const regularTool: Tool = {
+						...pencilTool, pencil: false
+					};
+					expect(nextToolFromKeystroke(regularTool, '4')).toEqual(pencilTool);
+					expect(nextToolFromKeystroke(pencilTool, '4')).toEqual(regularTool);
+				});
+			});
+
+			describe('And a different number is selected', () => {
+				it('changes the number and toggles the pencil-ness of the tool', () => {
+					const initialTool: Tool = {
+						type: 'number', n: 4, pencil: true
+					};
+					const expectedTool: Tool = {
+						type: 'number', n: 5, pencil: false
+					};
+					expect(nextToolFromKeystroke(initialTool, '5')).toEqual(expectedTool);
+				});
+			});
+		});
+
+		describe('When the key is something else', () => {
+			it('returns the currently selected tool', () => {
+				const tool: Tool = {type: 'eraser'};
+				expect(nextToolFromKeystroke(tool, 'x')).toEqual(tool);
+			});
+		});
 	});
 });
 
