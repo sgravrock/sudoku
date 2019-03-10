@@ -65,6 +65,11 @@ export class Puzzle {
 		return shallowEq(rawCells, sudoku.solvepuzzle(rawCells));
 	}
 
+	hasErrors() {
+		return sudoku.solvepuzzle(this.toRawCells()) === null;
+	}
+
+
 	toRawCells(): (number|null)[] {
 		return this._cells.map(cell => {
 			if (cell.entry && !cell.entry.pencil) {

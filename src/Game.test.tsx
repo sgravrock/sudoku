@@ -302,12 +302,40 @@ describe('Game', () => {
 			});
 		});
 	});
+
+	describe('When the "Undo Until Solvable" button is clicked', () => {
+		it('reverts to the last state with no errors', () => {
+			const puzzle = [
+				null, null, 0, 8, 3, 1, 6, 4, 5,
+				8, 3, 4, 5, 6, 0, 2, 1, 7,
+				6, 5, 1, 2, 4, 7, 8, 3, 0,
+				1, 8, 7, 6, 0, 5, 4, 2, 3,
+				2, 0, 6, 4, 7, 3, 1, 5, 8,
+				3, 4, 5, 1, 2, 8, 0, 7, 6,
+				5, 1, 3, 0, 8, 4, 7, 6, 2,
+				4, 6, 8, 7, 5, 2, 3, 0, 1,
+				0, 7, 2, 3, 1, 6, 5, 8, 4
+			];
+			const {container} = renderSubject({puzzle});
+
+			enterRegularNum(container, 8, 0);
+			enterRegularNum(container, 8, 1);
+
+			RTL.queryByText(container, 'Undo Until Solvable')!!.click();
+			expect(cell(container, 0).textContent).toEqual('8');
+			expect(cell(container, 1).textContent).toEqual('');
+		});
+	});
 });
 
 function enterRegularNumInFirstCell(container: HTMLElement, num: number) {
+	return enterRegularNum(container, num, 0);
+}
+
+function enterRegularNum(container: HTMLElement, num: number, cellIx: number) {
 	regularNumButton(container, num).click();
-	clickFirstCell(container);
-	expect(firstCell(container).textContent)
+	cell(container, cellIx).click();
+	expect(cell(container, cellIx).textContent)
 		.withContext('Number entry might be broken')
 		.toEqual(`${num}`);
 }
@@ -357,8 +385,14 @@ function clickFirstCell(container: HTMLElement): HTMLElement {
 }
 
 function firstCell(container: HTMLElement): HTMLElement {
-	return container.querySelector('.Grid td') as HTMLElement;
+	return cell(container, 0);
 }
+
+function cell(container: HTMLElement, cellIx: number): HTMLElement {
+	return container.querySelectorAll('.Grid td')[cellIx] as HTMLElement;
+
+}
+
 
 interface OptionalProps {
 	puzzle?: (number | null)[];

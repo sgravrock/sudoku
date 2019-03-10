@@ -34,6 +34,16 @@ const Game: React.FunctionComponent<Props> = props => {
 		}
 	}
 
+	function undoUntilSolvable() {
+		const newPuzzles = [...puzzles];
+
+		while (newPuzzles[newPuzzles.length - 1].hasErrors()) {
+			newPuzzles.pop();
+		}
+
+		setPuzzles(newPuzzles);
+	}
+
 	function reset() {
 		setPuzzles([...puzzles, puzzles[0]]);
 	}
@@ -48,6 +58,7 @@ const Game: React.FunctionComponent<Props> = props => {
 				<div className="Game-tools">
 					<ToolPicker enabler={toolEnabler}/>
 					<button onClick={undo}>Undo</button>
+					<button onClick={undoUntilSolvable}>Undo Until Solvable</button>
 					<button onClick={reset}>Start Over</button>
 				</div>
 			</div>
