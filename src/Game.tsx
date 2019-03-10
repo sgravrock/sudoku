@@ -60,8 +60,15 @@ export function nextToolFromKeystroke(tool: Tool, key: string): Tool {
 		return {...tool, pencil: !tool.pencil};
 	} else if (key >= '1' && key <= '9') {
 		const n = parseInt(key, 10);
-		const pencil = tool.type === 'number' ? !tool.pencil : false;
-		return {type: 'number', n, pencil};
+
+		if (tool.type === 'number' && tool.n === n) {
+			return {...tool, pencil: !tool.pencil};
+		} else if (tool.type === 'number') {
+			return {...tool, n};
+
+		} else {
+			return {type: 'number', n, pencil: false};
+		}
 	} else {
 		return tool;
 	}

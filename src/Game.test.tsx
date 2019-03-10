@@ -270,14 +270,27 @@ describe('Game', () => {
 			});
 
 			describe('And a different number is selected', () => {
-				it('changes the number and toggles the pencil-ness of the tool', () => {
-					const initialTool: Tool = {
-						type: 'number', n: 4, pencil: true
-					};
-					const expectedTool: Tool = {
+				it('changes the number and keeps the pencil-ness of the tool', () => {
+					expect(nextToolFromKeystroke({
+						type: 'number', n: 4, pencil: false
+					}, '5')).toEqual({
 						type: 'number', n: 5, pencil: false
-					};
-					expect(nextToolFromKeystroke(initialTool, '5')).toEqual(expectedTool);
+					});
+					expect(nextToolFromKeystroke({
+						type: 'number', n: 4, pencil: true
+					}, '5')).toEqual({
+						type: 'number', n: 5, pencil: true
+					});
+				});
+			});
+
+			describe('And a non-number tool is selected', () => {
+				it('selects the regular tool for the digit entered', () => {
+					expect(nextToolFromKeystroke({
+						type: 'eraser'
+					}, '5')).toEqual({
+						type: 'number', n: 5, pencil: false
+					});
 				});
 			});
 		});
