@@ -9,7 +9,8 @@ describe('Game', () => {
 		const regular = container.querySelector('.NumberPicker-regular') as HTMLElement;
 		const button = RTL.queryByLabelText(regular, '1', ) as HTMLInputElement;
 		expect(button.checked).toEqual(true);
-		expect(container.querySelectorAll('input[type=radio][checked]').length).toEqual(1);
+		expect(container.querySelectorAll('input[type=radio][checked]').length)
+			.toEqual(1);
 	});
 
 	it('allows single selection across both tool types', () => {
@@ -18,7 +19,8 @@ describe('Game', () => {
 		const button = () => RTL.queryByLabelText(pencil, '2') as HTMLInputElement;
 		button().click();
 		expect(button().checked).toEqual(true);
-		expect(container.querySelectorAll('input[type=radio][checked]').length).toEqual(1);
+		expect(container.querySelectorAll('input[type=radio][checked]').length)
+			.toEqual(1);
 	});
 
 	it('highlights cells with the currently selected number', () => {
