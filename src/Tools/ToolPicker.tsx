@@ -5,6 +5,7 @@ import {shallowEq} from "../equality";
 import {useCheckedContext} from "../useCheckedContext";
 import {IToolEnabler} from "./ToolEnabler";
 import {Tool} from "./index";
+import './ToolPicker.css';
 
 
 type SelectedToolContextValue = [Tool, (tool: Tool) => void];
@@ -17,6 +18,9 @@ const ToolPicker: React.FunctionComponent<{enabler: IToolEnabler}> = props => {
 			<NumberPicker pencil={false} enabler={props.enabler} />
 			<NumberPicker pencil={true} enabler={props.enabler} />
 			<ToolButton tool={{type: 'eraser'}} enabler={props.enabler} />
+			<div className="ToolPicker-keyboardHints">
+				Keyboard controls: 1-9 to select a number, p to toggle pencil marks
+			</div>
 		</div>
 	);
 };
