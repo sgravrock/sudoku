@@ -18,7 +18,7 @@ describe('Game', () => {
 		const {container} = renderSubject({});
 		const pencil = container.querySelector('.NumberPicker-pencil') as HTMLElement;
 		const button = () => RTL.queryByLabelText(pencil, '2') as HTMLInputElement;
-		button().click();
+		RTL.fireEvent.click(button());
 		expect(button().checked).toEqual(true);
 		expect(container.querySelectorAll('input[type=radio][checked]').length)
 			.toEqual(1);
@@ -333,17 +333,21 @@ function enterRegularNumInFirstCell(container: HTMLElement, num: number) {
 }
 
 function enterRegularNum(container: HTMLElement, num: number, cellIx: number) {
-	regularNumButton(container, num).click();
-	cell(container, cellIx).click();
+	RTL.fireEvent.click(regularNumButton(container, num));
+	RTL.fireEvent.click(cell(container, cellIx));
 	expect(cell(container, cellIx).textContent)
 		.withContext('Number entry might be broken')
 		.toEqual(`${num}`);
 }
 
 function enterPencilMarkInFirstCell(container: HTMLElement, num: number) {
-	pencilButton(container, num).click();
-	clickFirstCell(container);
-	expect(firstCell(container).textContent)
+	enterPencilMark(container, num, 0);
+}
+
+function enterPencilMark(container: HTMLElement, num: number, cellIx: number) {
+	RTL.fireEvent.click(pencilButton(container, num));
+	RTL.fireEvent.click(cell(container, cellIx));
+	expect(cell(container, cellIx).textContent)
 		.withContext('Number entry might be broken')
 		.toEqual(`(${num})`);
 }
@@ -357,7 +361,7 @@ function eraseFirstCell(container: HTMLElement) {
 }
 
 function selectRegularNumTool(container: HTMLElement, num: number) {
-	regularNumButton(container, num).click();
+	RTL.fireEvent.click(regularNumButton(container, num));
 }
 
 function regularNumButton(container: HTMLElement, num: number): HTMLInputElement {
@@ -366,7 +370,7 @@ function regularNumButton(container: HTMLElement, num: number): HTMLInputElement
 }
 
 function selectPencilTool(container: HTMLElement, num: number) {
-	pencilButton(container, num).click();
+	RTL.fireEvent.click(pencilButton(container, num));
 }
 
 function pencilButton(container: HTMLElement, num: number): HTMLInputElement {
@@ -376,11 +380,11 @@ function pencilButton(container: HTMLElement, num: number): HTMLInputElement {
 
 function selectEraserTool(container: HTMLElement) {
 	const button = RTL.queryByLabelText(container, 'Erase')!;
-	button.click();
+	RTL.fireEvent.click(button);
 }
 
 function clickFirstCell(container: HTMLElement): HTMLElement {
-	firstCell(container).click();
+	RTL.fireEvent.click(firstCell(container));
 	return firstCell(container);
 }
 
