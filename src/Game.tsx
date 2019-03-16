@@ -44,6 +44,10 @@ const Game: React.FunctionComponent<Props> = props => {
 		setPuzzles(newPuzzles);
 	}
 
+	function clearPencilMarks() {
+		setPuzzles([...puzzles, puzzle.clearPencilMarks()]);
+	}
+
 	function reset() {
 		setPuzzles([...puzzles, puzzles[0]]);
 	}
@@ -59,6 +63,7 @@ const Game: React.FunctionComponent<Props> = props => {
 					<ToolPicker enabler={toolEnabler}/>
 					<button onClick={undo}>Undo</button>
 					<button onClick={undoUntilSolvable}>Undo Until Solvable</button>
+					<button onClick={clearPencilMarks}>Clear Pencil Marks</button>
 					<button onClick={reset}>Start Over</button>
 				</div>
 			</div>

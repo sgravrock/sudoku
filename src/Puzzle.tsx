@@ -48,6 +48,16 @@ export class Puzzle {
 		return new Puzzle(newCells);
 	}
 
+	clearPencilMarks() {
+		return new Puzzle(this._cells.map(c => {
+			if (c.entry && c.entry.pencil) {
+				return {...c, entry: null};
+			} else {
+				return c;
+			}
+		}));
+	}
+
 	hasNonPencilEntry(x: number, y: number): boolean {
 		const entry = this._cells[9 * y + x].entry;
 		return entry !== null && !entry.pencil;

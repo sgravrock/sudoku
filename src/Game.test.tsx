@@ -326,6 +326,32 @@ describe('Game', () => {
 			expect(cell(container, 1).textContent).toEqual('');
 		});
 	});
+
+	describe('When the "Clear Pencil Marks" button is clicked', () => {
+		it('removes all pencil marks', () => {
+			const puzzle = [
+				null, null, null, 8, 3, 1, 6, 4, 5,
+				8, 3, 4, 5, 6, 0, 2, 1, 7,
+				6, 5, 1, 2, 4, 7, 8, 3, 0,
+				1, 8, 7, 6, 0, 5, 4, 2, 3,
+				2, 0, 6, 4, 7, 3, 1, 5, 8,
+				3, 4, 5, 1, 2, 8, 0, 7, 6,
+				5, 1, 3, 0, 8, 4, 7, 6, 2,
+				4, 6, 8, 7, 5, 2, 3, 0, 1,
+				0, 7, 2, 3, 1, 6, 5, 8, 4
+			];
+			const {container} = renderSubject({puzzle});
+
+			enterRegularNum(container, 8, 0);
+			enterPencilMark(container, 8, 1);
+			enterPencilMark(container, 8, 2);
+
+			RTL.queryByText(container, 'Clear Pencil Marks')!!.click();
+			expect(cell(container, 0).textContent).toEqual('8');
+			expect(cell(container, 1).textContent).toEqual('');
+			expect(cell(container, 2).textContent).toEqual('');
+		});
+	});
 });
 
 function enterRegularNumInFirstCell(container: HTMLElement, num: number) {
