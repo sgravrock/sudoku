@@ -35,13 +35,12 @@ const Game: React.FunctionComponent<Props> = props => {
 	}
 
 	function redoAsPencil() {
-		const {x, y, n} = findRegularNumChange(
-			puzzle,
-			puzzles[puzzles.length - 2]
-		);
-		const newPuzzle = puzzle.setCell(x, y, {ns: [n], pencil: true});
+		const prevPuzzle = puzzles[puzzles.length - 2];
+		const {x, y, n} = findRegularNumChange(puzzle, prevPuzzle);
+		const tool: Tool = {type: 'number', pencil: true, n};
+		const newPuzzle = applyTool(tool, x, y, prevPuzzle)
 		setPuzzles([...puzzles, newPuzzle]);
-		selectTool({type: 'number', pencil: true, n});
+		selectTool(tool);
 	}
 
 	function undoUntilSolvable() {

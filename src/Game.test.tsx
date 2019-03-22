@@ -358,11 +358,12 @@ describe('Game', () => {
 			const {container} = renderSubject({puzzle: arbitraryPuzzle});
 
 			enterRegularNum(container, 8, 0);
+			enterPencilMark(container, 7, 1);
 			enterRegularNum(container, 8, 1);
 			RTL.queryByText(container, 'Redo Last As Pencil')!.click();
 
 			expect(cell(container, 0).textContent).toEqual('8');
-			expect(cell(container, 1).textContent).toEqual('(8)');
+			expect(cell(container, 1).textContent).toEqual('(7,8)');
 		});
 
 		it('switches to the pencil tool', () => {
