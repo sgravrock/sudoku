@@ -352,6 +352,28 @@ describe('Game', () => {
 			expect(cell(container, 2).textContent).toEqual('');
 		});
 	});
+
+	describe('When the "Redo Last As Pencil" button is clicked', () => {
+		it('undoes the previous entry and repeats it as a pencil mark', () => {
+			const {container} = renderSubject({puzzle: arbitraryPuzzle});
+
+			enterRegularNum(container, 8, 0);
+			enterRegularNum(container, 8, 1);
+			RTL.queryByText(container, 'Redo Last As Pencil')!.click();
+
+			expect(cell(container, 0).textContent).toEqual('8');
+			expect(cell(container, 1).textContent).toEqual('(8)');
+		});
+
+		it('switches to the pencil tool', () => {
+			const {container} = renderSubject({puzzle: arbitraryPuzzle});
+
+			enterRegularNum(container, 8, 0);
+			RTL.queryByText(container, 'Redo Last As Pencil')!.click();
+			cell(container, 1).click();
+			expect(cell(container, 1).textContent).toEqual('(8)');
+		});
+	});
 });
 
 function enterRegularNumInFirstCell(container: HTMLElement, num: number) {

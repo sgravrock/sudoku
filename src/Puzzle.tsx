@@ -91,3 +91,7 @@ export class Puzzle {
 		});
 	}
 }
+
+export function isRegularNumEntry(entry: Entry | null): entry is NonPencilEntry {
+	return !!entry && !entry.pencil;
+}

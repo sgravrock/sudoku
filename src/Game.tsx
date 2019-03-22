@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from "react";
 import {Grid} from "./Grid";
 import {SelectedToolContext, ToolPicker} from "./Tools/ToolPicker";
-import {Puzzle} from "./Puzzle";
+import {isRegularNumEntry, Puzzle} from "./Puzzle";
 import {applyTool} from "./Tools/ToolApplier";
 import {ToolEnabler} from "./Tools/ToolEnabler";
 import {Tool} from "./Tools";
@@ -34,6 +34,16 @@ const Game: React.FunctionComponent<Props> = props => {
 		}
 	}
 
+	function redoAsPencil() {
+		const {x, y, n} = findRegularNumChange(
+			puzzle,
+			puzzles[puzzles.length - 2]
+		);
+		const newPuzzle = puzzle.setCell(x, y, {ns: [n], pencil: true});
+		setPuzzles([...puzzles, newPuzzle]);
+		selectTool({type: 'number', pencil: true, n});
+	}
+
 	function undoUntilSolvable() {
 		const newPuzzles = [...puzzles];
 
@@ -62,6 +72,7 @@ const Game: React.FunctionComponent<Props> = props => {
 				<div className="Game-tools">
 					<ToolPicker enabler={toolEnabler}/>
 					<button onClick={undo}>Undo</button>
+					<button onClick={redoAsPencil}>Redo Last As Pencil</button>
 					<button onClick={undoUntilSolvable}>Undo Until Solvable</button>
 					<button onClick={clearPencilMarks}>Clear Pencil Marks</button>
 					<button onClick={reset}>Start Over</button>
@@ -101,5 +112,25 @@ function useDocumentKeydown(handler: (key: string) => void, deps: any[]): void {
 		return () => document.removeEventListener('keydown', onKeyDown);
 	}, deps);
 }
+
+interface RegularNumChange {
+	x: number, y: number, n: number
+}
+
+function findRegularNumChange(newer: Puzzle, older: Puzzle): RegularNumChange {
+	for (let x = 0; x < 9; x++) {
+		for (let y = 0; y < 9; y++) {
+			const ne = newer.cell(x, y).entry;
+			const oe = older.cell(x, y).entry;
+
+			if (isRegularNumEntry(ne) && !isRegularNumEntry(oe)) {
+				return {x, y, n: ne.n}
+			}
+		}
+	}
+
+	throw new Error('findRegularNumChange found nothing');
+}
+
 
 export {Game};
