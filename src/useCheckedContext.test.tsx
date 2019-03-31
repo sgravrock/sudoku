@@ -1,16 +1,16 @@
-import * as RTL from 'react-testing-library'
-import React, {createContext, useContext} from "react";
+import {mount} from 'enzyme';
+import React, {createContext} from "react";
 import {useCheckedContext} from "./useCheckedContext";
 
 describe('useCheckedContext', function() {
 	describe('When there is a value, even a falsy one', () => {
 		it('behaves like a regular context', () => {
-			const {container} = RTL.render(
+			const subject = mount(
 				<UnderlyingContext.Provider value={0}>
 					<HookUser />
 				</UnderlyingContext.Provider>
 			);
-			expect(container.textContent).toEqual('0');
+			expect(subject.text()).toEqual('0');
 		});
 	});
 

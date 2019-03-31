@@ -1,43 +1,44 @@
 import React from 'react';
-import * as RTL from 'react-testing-library'
+import {mount, ReactWrapper} from 'enzyme';
 import {Game, nextToolFromKeystroke} from "./Game";
 import {Tool} from "./Tools";
+import {ToolPicker} from "./Tools/ToolPicker";
 
 
 describe('Game', () => {
 	it('initially selects the normal 1 tool', () => {
-		const {container} = renderSubject({});
-		const regular = container.querySelector('.NumberPicker-regular') as HTMLElement;
-		const button = RTL.queryByLabelText(regular, '1', ) as HTMLInputElement;
-		expect(button.checked).toEqual(true);
-		expect(container.querySelectorAll('input[type=radio][checked]').length)
-			.toEqual(1);
+		const subject = renderSubject({});
+		const regular = subject.find('.NumberPicker-regular');
+		const button = findByLabelText(regular, '1');
+		expect(button).toHaveProp('checked', true);
+		const checkedRadios = subject.find('input[type="radio"][checked=true]');
+		expect(checkedRadios.length).toEqual(1);
 	});
 
 	it('allows single selection across both tool types', () => {
-		const {container} = renderSubject({});
-		const pencil = container.querySelector('.NumberPicker-pencil') as HTMLElement;
-		const button = () => RTL.queryByLabelText(pencil, '2') as HTMLInputElement;
-		RTL.fireEvent.click(button());
-		expect(button().checked).toEqual(true);
-		expect(container.querySelectorAll('input[type=radio][checked]').length)
-			.toEqual(1);
+		const subject = renderSubject({});
+		const pencil = () => subject.find('.NumberPicker-pencil');
+		const button = () => findByLabelText(pencil(), '2');
+		button().simulate('change', {target: {checked: true}});
+		expect(button()).toHaveProp('checked', true);
+		const checkedRadios = subject.find('input[type="radio"][checked=true]');
+		expect(checkedRadios.length).toEqual(1);
 	});
 
 	it('highlights cells with the currently selected number', () => {
 		const puzzle = [...arbitraryPuzzle];
 		puzzle[0] = 1;
 		puzzle[1] = 2;
-		const {container} = renderSubject({puzzle});
-		const cells = () => container.querySelectorAll('.Grid td');
+		const subject = renderSubject({puzzle});
+		const cells = () => subject.find('.Grid td');
 
-		selectRegularNumTool(container, 2);
-		expect(cells()[0]).toHaveClass('GridCell-current');
-		expect(cells()[1]).not.toHaveClass('GridCell-current');
+		selectRegularNumTool(subject, 2);
+		expect(cells().at(0)).toHaveClassName('GridCell-current');
+		expect(cells().at(1)).not.toHaveClassName('GridCell-current');
 
-		selectPencilTool(container, 3);
-		expect(cells()[0]).not.toHaveClass('GridCell-current');
-		expect(cells()[1]).toHaveClass('GridCell-current');
+		selectPencilTool(subject, 3);
+		expect(cells().at(0)).not.toHaveClassName('GridCell-current');
+		expect(cells().at(1)).toHaveClassName('GridCell-current');
 	});
 
 	describe('When a grid cell is clicked', () => {
@@ -45,21 +46,21 @@ describe('Game', () => {
 			it('fills the cell with the selected number', () => {
 				const puzzle = [...arbitraryPuzzle];
 				puzzle[0] = null;
-				const {container} = renderSubject({puzzle});
+				const subject = renderSubject({puzzle});
 
-				selectRegularNumTool(container, 1);
-				const cell = clickFirstCell(container);
-				expect(cell.textContent).toEqual('1');
+				selectRegularNumTool(subject, 1);
+				const cell = clickFirstCell(subject);
+				expect(cell.text()).toEqual('1');
 			});
 
 			it('does not change cells with given values', () => {
 				const puzzle = [...arbitraryPuzzle];
 				puzzle[0] = 1; // becomes 2
-				const {container} = renderSubject({puzzle});
+				const subject = renderSubject({puzzle});
 
-				selectRegularNumTool(container, 1);
-				const cell = clickFirstCell(container);
-				expect(cell.textContent).toEqual('2');
+				selectRegularNumTool(subject, 1);
+				const cell = clickFirstCell(subject);
+				expect(cell.text()).toEqual('2');
 			});
 		});
 
@@ -67,44 +68,44 @@ describe('Game', () => {
 			it('pencils in the selected number', () => {
 				const puzzle = [...arbitraryPuzzle];
 				puzzle[0] = null;
-				const {container} = renderSubject({puzzle});
+				const subject = renderSubject({puzzle});
 
-				selectPencilTool(container, 1);
-				const cell = clickFirstCell(container);
-				expect(cell.textContent).toEqual('(1)');
+				selectPencilTool(subject, 1);
+				const cell = clickFirstCell(subject);
+				expect(cell.text()).toEqual('(1)');
 			});
 
 			it('allows multiple pencil marks in the same cell', () => {
 				const puzzle = [...arbitraryPuzzle];
 				puzzle[0] = null;
-				const {container} = renderSubject({puzzle});
+				const subject = renderSubject({puzzle});
 
-				selectPencilTool(container, 1);
-				clickFirstCell(container);
-				selectPencilTool(container, 2);
-				const cell = clickFirstCell(container);
-				expect(cell.textContent).toEqual('(1,2)');
+				selectPencilTool(subject, 1);
+				clickFirstCell(subject);
+				selectPencilTool(subject, 2);
+				const cell = clickFirstCell(subject);
+				expect(cell.text()).toEqual('(1,2)');
 			});
 
 			it('does not change cells with given values', () => {
 				const puzzle = [...arbitraryPuzzle];
 				puzzle[0] = 5;
-				const {container} = renderSubject({puzzle});
+				const subject = renderSubject({puzzle});
 
-				selectPencilTool(container, 1);
-				const cell = clickFirstCell(container);
-				expect(cell.textContent).toEqual('6');
+				selectPencilTool(subject, 1);
+				const cell = clickFirstCell(subject);
+				expect(cell.text()).toEqual('6');
 			});
 
 			it('does not change cells with entered regular numbers', () => {
 				const puzzle = [...arbitraryPuzzle];
 				puzzle[0] = null;
-				const {container} = renderSubject({puzzle});
+				const subject = renderSubject({puzzle});
 
-				enterRegularNumInFirstCell(container, 1);
-				selectPencilTool(container, 2);
-				const cell = clickFirstCell(container);
-				expect(cell.textContent).toEqual('1');
+				enterRegularNumInFirstCell(subject, 1);
+				selectPencilTool(subject, 2);
+				const cell = clickFirstCell(subject);
+				expect(cell.text()).toEqual('1');
 			});
 
 		});
@@ -113,24 +114,24 @@ describe('Game', () => {
 			it('erases the cell', () => {
 				const puzzle = [...arbitraryPuzzle];
 				puzzle[0] = null;
-				const {container} = renderSubject({puzzle});
+				const subject = renderSubject({puzzle});
 
-				selectRegularNumTool(container, 1);
-				clickFirstCell(container);
+				selectRegularNumTool(subject, 1);
+				clickFirstCell(subject);
 
-				selectEraserTool(container);
-				const cell = clickFirstCell(container);
-				expect(cell.textContent).toEqual('');
+				selectEraserTool(subject);
+				const cell = clickFirstCell(subject);
+				expect(cell.text()).toEqual('');
 			});
 
 			it('does not erase cells with given values', () => {
 				const puzzle = [...arbitraryPuzzle];
 				puzzle[0] = 0;
-				const {container} = renderSubject({puzzle});
+				const subject = renderSubject({puzzle});
 
-				selectEraserTool(container);
-				const cell = clickFirstCell(container);
-				expect(cell.textContent).toEqual('1');
+				selectEraserTool(subject);
+				const cell = clickFirstCell(subject);
+				expect(cell.text()).toEqual('1');
 			});
 		});
 	});
@@ -138,35 +139,35 @@ describe('Game', () => {
 	it('supports undo', () => {
 		const puzzle = [...arbitraryPuzzle];
 		puzzle[0] = null;
-		const {container} = renderSubject({puzzle});
+		const subject = renderSubject({puzzle});
 
-		enterRegularNumInFirstCell(container, 1);
-		eraseFirstCell(container);
-		enterRegularNumInFirstCell(container, 2);
+		enterRegularNumInFirstCell(subject, 1);
+		eraseFirstCell(subject);
+		enterRegularNumInFirstCell(subject, 2);
 
-		const undo = () => RTL.queryByText(container, 'Undo')!!.click();
+		const undo = () => findButtonByText(subject, 'Undo').simulate('click');
 		undo();
-		expect(firstCell(container).textContent).toEqual('');
+		expect(firstCell(subject).text()).toEqual('');
 		undo();
-		expect(firstCell(container).textContent).toEqual('1');
+		expect(firstCell(subject).text()).toEqual('1');
 		undo();
-		expect(firstCell(container).textContent).toEqual('');
+		expect(firstCell(subject).text()).toEqual('');
 	});
 
 	it('can reset to the initial state', () => {
 		const puzzle = [...arbitraryPuzzle];
 		puzzle[0] = null;
-		const {container} = renderSubject({puzzle});
+		const subject = renderSubject({puzzle});
 
-		enterRegularNumInFirstCell(container, 1);
-		eraseFirstCell(container);
-		enterRegularNumInFirstCell(container, 2);
+		enterRegularNumInFirstCell(subject, 1);
+		eraseFirstCell(subject);
+		enterRegularNumInFirstCell(subject, 2);
 
-		RTL.queryByText(container, 'Start Over')!!.click();
-		expect(firstCell(container).textContent).toEqual('');
+		findButtonByText(subject, 'Start Over').simulate('click');
+		expect(firstCell(subject).text()).toEqual('');
 
-		RTL.queryByText(container, 'Undo')!!.click();
-		expect(firstCell(container).textContent).toEqual('2');
+		findButtonByText(subject, 'Undo').simulate('click');
+		expect(firstCell(subject).text()).toEqual('2');
 	});
 
 	it('disables numbers that are fully entered', () => {
@@ -182,12 +183,12 @@ describe('Game', () => {
 			null, null, null, null, null, null, null, null, null,
 		];
 
-		const {container} = renderSubject({puzzle});
+		const subject = renderSubject({puzzle});
 
-		enterRegularNumInFirstCell(container, 1);
-		expect(firstCell(container).textContent).toEqual('1');
-		expect(regularNumButton(container, 1).disabled).toBeTruthy();
-		expect(regularNumButton(container, 1).disabled).toBeTruthy();
+		enterRegularNumInFirstCell(subject, 1);
+		expect(firstCell(subject).text()).toEqual('1');
+		expect(regularNumButton(subject, 1).prop('disabled')).toBeTruthy();
+		expect(regularNumButton(subject, 1).prop('disabled')).toBeTruthy();
 	});
 
 	it('does not disable numbers when some entries are pencil marks', () => {
@@ -203,11 +204,11 @@ describe('Game', () => {
 			null, null, null, null, null, null, null, null, null,
 		];
 
-		const {container} = renderSubject({puzzle});
+		const subject = renderSubject({puzzle});
 
-		enterPencilMarkInFirstCell(container, 1);
-		expect(regularNumButton(container, 1).disabled).toBeFalsy();
-		expect(regularNumButton(container, 1).disabled).toBeFalsy();
+		enterPencilMarkInFirstCell(subject, 1);
+		expect(regularNumButton(subject, 1).prop('disabled')).toBeFalsy();
+		expect(regularNumButton(subject, 1).prop('disabled')).toBeFalsy();
 	});
 
 	it('shows "Solved! when the puzzle is correctly solved', () => {
@@ -222,14 +223,14 @@ describe('Game', () => {
 			4, 6, 8, 7, 5, 2, 3, 0, 1,
 			0, 7, 2, 3, 1, 6, 5, 8, 4
 		];
-		const {container} = renderSubject({puzzle});
+		const subject = renderSubject({puzzle});
 
-		enterRegularNumInFirstCell(container, 1);
-		expect(container.textContent).not.toContain('Solved!');
+		enterRegularNumInFirstCell(subject, 1);
+		expect(subject.text()).not.toContain('Solved!');
 
-		eraseFirstCell(container);
-		enterRegularNumInFirstCell(container, 8);
-		expect(container.textContent).toContain('Solved!');
+		eraseFirstCell(subject);
+		enterRegularNumInFirstCell(subject, 8);
+		expect(subject.text()).toContain('Solved!');
 	});
 
 	describe('nextToolFromKeystroke', () => {
@@ -316,14 +317,14 @@ describe('Game', () => {
 				4, 6, 8, 7, 5, 2, 3, 0, 1,
 				0, 7, 2, 3, 1, 6, 5, 8, 4
 			];
-			const {container} = renderSubject({puzzle});
+			const subject = renderSubject({puzzle});
 
-			enterRegularNum(container, 8, 0);
-			enterRegularNum(container, 8, 1);
+			enterRegularNum(subject, 8, 0);
+			enterRegularNum(subject, 8, 1);
 
-			RTL.queryByText(container, 'Undo Until Solvable')!!.click();
-			expect(cell(container, 0).textContent).toEqual('8');
-			expect(cell(container, 1).textContent).toEqual('');
+			findButtonByText(subject, 'Undo Until Solvable').simulate('click');
+			expect(cell(subject, 0).text()).toEqual('8');
+			expect(cell(subject, 1).text()).toEqual('');
 		});
 	});
 
@@ -340,110 +341,118 @@ describe('Game', () => {
 				4, 6, 8, 7, 5, 2, 3, 0, 1,
 				0, 7, 2, 3, 1, 6, 5, 8, 4
 			];
-			const {container} = renderSubject({puzzle});
+			const subject = renderSubject({puzzle});
 
-			enterRegularNum(container, 8, 0);
-			enterPencilMark(container, 8, 1);
-			enterPencilMark(container, 8, 2);
+			enterRegularNum(subject, 8, 0);
+			enterPencilMark(subject, 8, 1);
+			enterPencilMark(subject, 8, 2);
 
-			RTL.queryByText(container, 'Clear Pencil Marks')!!.click();
-			expect(cell(container, 0).textContent).toEqual('8');
-			expect(cell(container, 1).textContent).toEqual('');
-			expect(cell(container, 2).textContent).toEqual('');
+			findButtonByText(subject, 'Clear Pencil Marks').simulate('click');
+			expect(cell(subject, 0).text()).toEqual('8');
+			expect(cell(subject, 1).text()).toEqual('');
+			expect(cell(subject, 2).text()).toEqual('');
 		});
 	});
 
 	describe('When the "Redo Last As Pencil" button is clicked', () => {
 		it('undoes the previous entry and repeats it as a pencil mark', () => {
-			const {container} = renderSubject({puzzle: arbitraryPuzzle});
+			const subject = renderSubject({puzzle: arbitraryPuzzle});
 
-			enterRegularNum(container, 8, 0);
-			enterPencilMark(container, 7, 1);
-			enterRegularNum(container, 8, 1);
-			RTL.queryByText(container, 'Redo Last As Pencil')!.click();
+			enterRegularNum(subject, 8, 0);
+			enterPencilMark(subject, 7, 1);
+			enterRegularNum(subject, 8, 1);
+			findButtonByText(subject, 'Redo Last As Pencil').simulate('click');
 
-			expect(cell(container, 0).textContent).toEqual('8');
-			expect(cell(container, 1).textContent).toEqual('(7,8)');
+			expect(cell(subject, 0).text()).toEqual('8');
+			expect(cell(subject, 1).text()).toEqual('(7,8)');
 		});
 
 		it('switches to the pencil tool', () => {
-			const {container} = renderSubject({puzzle: arbitraryPuzzle});
+			const subject = renderSubject({puzzle: arbitraryPuzzle});
 
-			enterRegularNum(container, 8, 0);
-			RTL.queryByText(container, 'Redo Last As Pencil')!.click();
-			cell(container, 1).click();
-			expect(cell(container, 1).textContent).toEqual('(8)');
+			enterRegularNum(subject, 8, 0);
+			findButtonByText(subject, 'Redo Last As Pencil').simulate('click');
+			cell(subject, 1).simulate('click');
+			expect(cell(subject, 1).text()).toEqual('(8)');
 		});
 	});
 });
 
-function enterRegularNumInFirstCell(container: HTMLElement, num: number) {
-	return enterRegularNum(container, num, 0);
+function enterRegularNumInFirstCell(subject: ReactWrapper, num: number) {
+	return enterRegularNum(subject, num, 0);
 }
 
-function enterRegularNum(container: HTMLElement, num: number, cellIx: number) {
-	RTL.fireEvent.click(regularNumButton(container, num));
-	RTL.fireEvent.click(cell(container, cellIx));
-	expect(cell(container, cellIx).textContent)
+function enterRegularNum(subject: ReactWrapper, num: number, cellIx: number) {
+	regularNumButton(subject, num).simulate('change', {target: {checked: true}});
+	cell(subject, cellIx).simulate('click');
+	expect(cell(subject, cellIx).text())
 		.withContext('Number entry might be broken')
 		.toEqual(`${num}`);
 }
 
-function enterPencilMarkInFirstCell(container: HTMLElement, num: number) {
-	enterPencilMark(container, num, 0);
+function enterPencilMarkInFirstCell(subject: ReactWrapper, num: number) {
+	enterPencilMark(subject, num, 0);
 }
 
-function enterPencilMark(container: HTMLElement, num: number, cellIx: number) {
-	RTL.fireEvent.click(pencilButton(container, num));
-	RTL.fireEvent.click(cell(container, cellIx));
-	expect(cell(container, cellIx).textContent)
+function enterPencilMark(subject: ReactWrapper, num: number, cellIx: number) {
+	pencilButton(subject, num).simulate('change', {target: {checked: true}});
+	cell(subject, cellIx).simulate('click');
+	expect(cell(subject, cellIx).text())
 		.withContext('Number entry might be broken')
 		.toEqual(`(${num})`);
 }
 
-function eraseFirstCell(container: HTMLElement) {
-	selectEraserTool(container);
-	clickFirstCell(container);
-	expect(firstCell(container).textContent)
+function eraseFirstCell(subject: ReactWrapper) {
+	selectEraserTool(subject);
+	clickFirstCell(subject);
+	expect(firstCell(subject).text())
 		.withContext('Erasing might be broken')
 		.toEqual('');
 }
 
-function selectRegularNumTool(container: HTMLElement, num: number) {
-	RTL.fireEvent.click(regularNumButton(container, num));
+function selectRegularNumTool(subject: ReactWrapper, num: number) {
+	regularNumButton(subject, num).simulate('change', {target: {checked: true}});
 }
 
-function regularNumButton(container: HTMLElement, num: number): HTMLInputElement {
-	const regular = container.querySelector('.NumberPicker-regular') as HTMLElement;
-	return RTL.queryByLabelText(regular, num + '',) as HTMLInputElement;
+function regularNumButton(subject: ReactWrapper, num: number): ReactWrapper {
+	const regular = subject.find('.NumberPicker-regular');
+	return findByLabelText(regular, num + '');
 }
 
-function selectPencilTool(container: HTMLElement, num: number) {
-	RTL.fireEvent.click(pencilButton(container, num));
+function selectPencilTool(subject: ReactWrapper, num: number) {
+	pencilButton(subject, num).simulate('change', {target: {checked: true}});
 }
 
-function pencilButton(container: HTMLElement, num: number): HTMLInputElement {
-	const pencil = container.querySelector('.NumberPicker-pencil') as HTMLElement;
-	return RTL.queryByLabelText(pencil, num + '',) as HTMLInputElement;
+function pencilButton(subject: ReactWrapper, num: number): ReactWrapper {
+	const pencil = subject.find('.NumberPicker-pencil');
+	return findByLabelText(pencil, num + '');
 }
 
-function selectEraserTool(container: HTMLElement) {
-	const button = RTL.queryByLabelText(container, 'Erase')!;
-	RTL.fireEvent.click(button);
+function selectEraserTool(subject: ReactWrapper) {
+	findByLabelText(subject, 'Erase').simulate('change', {target: {checked: true}});
 }
 
-function clickFirstCell(container: HTMLElement): HTMLElement {
-	RTL.fireEvent.click(firstCell(container));
-	return firstCell(container);
+function clickFirstCell(subject: ReactWrapper): ReactWrapper {
+	firstCell(subject).simulate('click');
+	return firstCell(subject);
 }
 
-function firstCell(container: HTMLElement): HTMLElement {
-	return cell(container, 0);
+function firstCell(subject: ReactWrapper): ReactWrapper {
+	return cell(subject, 0);
 }
 
-function cell(container: HTMLElement, cellIx: number): HTMLElement {
-	return container.querySelectorAll('.Grid td')[cellIx] as HTMLElement;
+function cell(subject: ReactWrapper, cellIx: number): ReactWrapper {
+	return subject.find('.Grid td').at(cellIx);
 
+}
+
+function findByLabelText(root: ReactWrapper, labelText: string): ReactWrapper {
+	const label = root.findWhere(x => x.length === 1 && x.is('label') && x.text() === labelText);
+	return label.find('input');
+}
+
+function findButtonByText(root: ReactWrapper, text: string): ReactWrapper {
+	return root.findWhere(x => x.length === 1 && x.is('button') && x.text() === text);
 }
 
 
@@ -452,7 +461,7 @@ interface OptionalProps {
 }
 
 function renderSubject(props: OptionalProps) {
-	return RTL.render(<Game puzzleData={props.puzzle || arbitraryPuzzle} />);
+	return mount(<Game puzzleData={props.puzzle || arbitraryPuzzle} />);
 }
 
 const arbitraryPuzzle: (number | null)[] = [

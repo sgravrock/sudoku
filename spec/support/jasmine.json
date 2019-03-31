@@ -5,9 +5,7 @@
   ],
   "helpers": [
     "../spec/support/babel.js",
-    "testSupport/jsdom.ts",
-    "testSupport/exclude.ts",
-    "testSupport/rtl.ts"
+    "testSupport/*.ts"
   ],
   "stopSpecOnExpectationFailure": false,
   "random": true
