@@ -1,3 +1,23 @@
 .ToolPicker-keyboardHints {
 	margin: 1em 0;
 }
+
+.ToolButton {
+	display: inline-block;
+	position: relative;
+}
+
+.ToolButton-checkmark {
+	visibility: hidden;
+	position: absolute;
+	top: 0;
+	left: 5px; /* Over the radio button */
+}
+
+.ToolButton-disabled .ToolButton-checkmark {
+	visibility: visible;
+}
+
+.ToolButton-disabled input {
+	visibility: hidden;
+}

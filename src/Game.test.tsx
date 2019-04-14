@@ -2,7 +2,6 @@ import React from 'react';
 import {mount, ReactWrapper} from 'enzyme';
 import {Game, nextToolFromKeystroke} from "./Game";
 import {Tool} from "./Tools";
-import {ToolPicker} from "./Tools/ToolPicker";
 
 
 describe('Game', () => {

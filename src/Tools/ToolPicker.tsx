@@ -91,17 +91,23 @@ export const ToolButton: React.FunctionComponent<ToolButtonProps> = props => {
 		}
 	}
 
+	const disabled = !props.enabler.isEnabled(props.tool);
+	const classes = classNames('ToolButton', {'ToolButton-disabled': disabled});
+
 	return (
-		<label>
-			<input
-				type="radio"
-				name="tool"
-				checked={checked}
-				onChange={() => selectTool(props.tool)}
-				disabled={!props.enabler.isEnabled(props.tool)}
-			/>
-			{text()}
-		</label>
+		<span className={classes}>
+			<span className="ToolButton-checkmark">✓</span>
+			<label>
+				<input
+					type="radio"
+					name="tool"
+					checked={checked}
+					onChange={() => selectTool(props.tool)}
+					disabled={disabled}
+				/>
+				{text()}
+			</label>
+		</span>
 	);
 };
 

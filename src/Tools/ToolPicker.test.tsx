@@ -1,7 +1,7 @@
 import React from 'react';
 import {mount} from 'enzyme';
 import {SelectedToolContext, ToolButton} from "./ToolPicker";
-import {ToolEnabler} from "./ToolEnabler";
+import {IToolEnabler, ToolEnabler} from "./ToolEnabler";
 import {Puzzle} from "../Puzzle";
 import {Tool} from "./index";
 
@@ -26,16 +26,39 @@ describe('ToolPicker', () => {
 				expect(subject.find('input')).toHaveProp('checked', false);
 			});
 		});
+
+		describe('When the tool is disabled', () => {
+			it('disables the radio button', () => {
+				const tool: Tool = {type: 'number', n: 2, pencil: true};
+				const enabler: IToolEnabler = {
+					isEnabled: t => t !== tool
+				};
+				const subject = renderToolButton({tool, enabler, selectedTool: tool});
+
+				expect(subject.find('input')).toHaveProp('disabled', true);
+			});
+
+			it('replaces the button with a checkmark', () => {
+				const tool: Tool = {type: 'number', n: 2, pencil: true};
+				const enabler: IToolEnabler = {
+					isEnabled: t => t !== tool
+				};
+				const subject = renderToolButton({tool, enabler, selectedTool: tool});
+
+				expect(subject.find('.ToolButton')).toHaveClassName('ToolButton-disabled');
+			});
+		});
 	});
 });
 
 interface Props {
 	selectedTool: Tool;
 	tool: Tool;
+	enabler?: IToolEnabler;
 }
 
 function renderToolButton(props: Props) {
-	const enabler = new ToolEnabler(Puzzle.fromRawCells([]));
+	const enabler = props.enabler || new ToolEnabler(Puzzle.fromRawCells([]));
 
 	return mount(
 		<SelectedToolContext.Provider value={[props.selectedTool, () => {}]}>
