@@ -83,7 +83,7 @@ describe('Game', () => {
 				clickFirstCell(subject);
 				selectPencilTool(subject, 2);
 				const cell = clickFirstCell(subject);
-				expect(cell.text()).toEqual('(1,2)');
+				expect(cell.text()).toEqual('(1,\u200b2)');
 			});
 
 			it('does not change cells with given values', () => {
@@ -363,7 +363,7 @@ describe('Game', () => {
 			findButtonByText(subject, 'Redo Last As Pencil').simulate('click');
 
 			expect(cell(subject, 0).text()).toEqual('8');
-			expect(cell(subject, 1).text()).toEqual('(7,8)');
+			expect(cell(subject, 1).text()).toEqual('(7,\u200b8)');
 		});
 
 		it('switches to the pencil tool', () => {

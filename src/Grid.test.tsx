@@ -53,6 +53,25 @@ describe('Grid', () => {
 		expect(cells.at(1)).not.toHaveClassName('GridCell-immutable');
 	});
 
+	it('allows line-breaking between pencil marks', () => {
+		const puzzle = Puzzle.fromRawCells([
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null,
+			null, null, null, null, null, null, null, null, null
+		]).setCell(0, 0, {ns: [1, 2, 3], pencil: true});
+		const subject = renderGrid({puzzle});
+		const cell = subject.find('td').at(0);
+		expect(cell.text())
+			.withContext('Should have zero-width spaces')
+			.toEqual('(1,\u200b2,\u200b3)');
+	});
+
 	it('marks pencil cells for the current tool', () => {
 		const puzzle = Puzzle.fromRawCells([
 			null, null, null, null, null, null, null, null, null,

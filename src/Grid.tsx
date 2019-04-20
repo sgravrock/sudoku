@@ -79,7 +79,7 @@ const GridCell: React.FunctionComponent<GridCellProps> = props => {
 		if (!cell.entry) {
 			return '';
 		} else if (cell.entry.pencil) {
-			return `(${cell.entry.ns.join(',')})`;
+			return `(${cell.entry.ns.join(',\u200b')})`;
 		} else {
 			return cell.entry.n;
 		}
