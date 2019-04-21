@@ -82,7 +82,7 @@ const Game: React.FunctionComponent<Props> = props => {
 };
 
 export function nextToolFromKeystroke(tool: Tool, key: string): Tool {
-	if (key === 'p' && tool.type === 'number') {
+	if ((key === 'p' || key === ' ') && tool.type === 'number') {
 		return {...tool, pencil: !tool.pencil};
 	} else if (key >= '1' && key <= '9') {
 		const n = parseInt(key, 10);

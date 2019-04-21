@@ -233,7 +233,7 @@ describe('Game', () => {
 	});
 
 	describe('nextToolFromKeystroke', () => {
-		describe('When the key is p', () => {
+		function hasPencilSwitchingBehavior(key: string) {
 			describe('And a number tool is selected', () => {
 				it('toggles the pencil-ness of the tool', () => {
 					const pencilTool: Tool = {
@@ -242,17 +242,24 @@ describe('Game', () => {
 					const regularTool: Tool = {
 						...pencilTool, pencil: false
 					};
-					expect(nextToolFromKeystroke(regularTool, 'p')).toEqual(pencilTool);
-					expect(nextToolFromKeystroke(pencilTool, 'p')).toEqual(regularTool);
+					expect(nextToolFromKeystroke(regularTool, key)).toEqual(pencilTool);
+					expect(nextToolFromKeystroke(pencilTool, key)).toEqual(regularTool);
 				});
 			});
 
 			describe('And a non-number tool is selected', () => {
 				it('returns the currently selected tool', () => {
 					const tool: Tool = {type: 'eraser'};
-					expect(nextToolFromKeystroke(tool, 'p')).toEqual(tool);
+					expect(nextToolFromKeystroke(tool, key)).toEqual(tool);
 				});
 			});
+		}
+		describe('When the key is p', () => {
+			hasPencilSwitchingBehavior('p');
+		});
+
+		describe('When the key is space', () => {
+			hasPencilSwitchingBehavior(' ');
 		});
 
 		describe('When the key is a digit', () => {

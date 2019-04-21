@@ -19,7 +19,7 @@ const ToolPicker: React.FunctionComponent<{enabler: IToolEnabler}> = props => {
 			<NumberPicker pencil={true} enabler={props.enabler} />
 			<ToolButton tool={{type: 'eraser'}} enabler={props.enabler} />
 			<div className="ToolPicker-keyboardHints">
-				Keyboard controls: 1-9 to select a number, p to toggle pencil marks
+				Keyboard controls: 1-9 to select a number, p or space to toggle pencil marks
 			</div>
 		</div>
 	);
