@@ -4,10 +4,20 @@
 }
 
 .Grid td {
+	/* Width breakpoints here and in Game.css depend on this value. */
 	width: 3em;
 	height: 3em;
 	border: 1px solid black;
 	text-align: center;
+}
+
+/* Prevent other elements from compressing the cells,
+   unless there really isn't enough room.
+ */
+@media screen and (min-width: 31em) {
+	.Grid td {
+		min-width: 3em;
+	}
 }
 
 .Grid td:nth-child(3), .Grid td:nth-child(6) {
