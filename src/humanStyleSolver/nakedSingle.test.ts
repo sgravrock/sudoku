@@ -1,5 +1,5 @@
-import {Puzzle} from "../Puzzle";
-import {solveNakedSingle} from "./nakedSingle";
+import {NonPencilEntry, Puzzle} from "../Puzzle";
+import {solveNakedSingle, solveNakedSingleInCell} from "./nakedSingle";
 import {parsePuzzle} from "../testSupport/parsePuzzle";
 
 describe('nakedSingle', () => {
@@ -57,29 +57,61 @@ describe('nakedSingle', () => {
 
 		// TODO can we fuzz column, row, and house naked singles?
 		it('fills in any final entry', () => {
+			const solved = solvedPuzzle(true);
+
 			for (let x = 0; x < 9; x++) {
 				for (let y = 0; y < 9; y++) {
-					const input = solvedPuzzle.setCell(x, y, null);
+					const input = solved.setCell(x, y, null);
 					expect(solveNakedSingle(input))
 						.withContext(`x=${x} y=${y}`)
-						.toEqual(solvedPuzzle);
+						.toEqual(solved);
 				}
 			}
 		});
+	});
+
+	describe('solveNakedSingleInCell', () => {
+		it('returns null when the cell is not a naked single', () => {
+			expect(solveNakedSingleInCell(emptyPuzzle, 0, 0)).toBeNull();
+		});
+
+		it('returns null when the cell when the cell has a fixed entry', () => {
+			expect(solveNakedSingleInCell(solvedPuzzle(false), 0, 0)).toBeNull();
+
+		});
+
+		it('returns null when the cell when the cell has a normal entry', () => {
+			expect(solveNakedSingleInCell(solvedPuzzle(true), 0, 0)).toBeNull();
+		});
+
+		it('fills in a naked single', () => {
+			const basis = solvedPuzzle();
+			const n = (basis.cell(0, 0).entry as NonPencilEntry).n;
+			const puzzle = basis.setCell(0, 0, null);
+			const expected = basis.setCell(0, 0, {n, pencil: false});
+
+			expect(solveNakedSingleInCell(puzzle, 0, 0)).toEqual(expected);
+		});
+
+		// TODO fuzz "fills in any row naked single"
+		// TODO fuzz "fills in any row column single"
+		// TODO fuzz "fills in any house column single"
 	});
 });
 
 const emptyPuzzle = Puzzle.fromRawCells((repeat(null, 81)));
 
-const solvedPuzzle = parsePuzzle(`|943758612
-   								  |165294387
-   								  |287613954
-   								  |712986435
-   								  |436571829
-   								  |598342761
-   								  |879135246
-   								  |321467598
-   								  |654829173`, true);
+function solvedPuzzle(mutable: boolean = false): Puzzle {
+	return parsePuzzle(`|943758612
+					    |165294387
+					    |287613954
+					    |712986435
+					    |436571829
+					    |598342761
+					    |879135246
+					    |321467598
+					    |654829173`, mutable);
+}
 
 function repeat<T>(value: T, times: number): T[] {
 	const result: T[] = [];
