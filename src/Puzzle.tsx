@@ -2,12 +2,12 @@
 import sudoku from 'sudoku';
 import {shallowEq} from "./equality";
 
-interface NonPencilEntry {
+export interface NonPencilEntry {
 	n: number;
 	pencil: false;
 }
 
-interface PencilEntry {
+export interface PencilEntry {
 	ns: number[];
 	pencil: true;
 }
@@ -22,13 +22,13 @@ interface Cell {
 export class Puzzle {
 	private readonly _cells: Cell[];
 
-	static fromRawCells(rawInput: (number|null)[]): Puzzle {
+	static fromRawCells(rawInput: (number|null)[], mutable: boolean = false): Puzzle {
 		const cells = rawInput.map<Cell>(n => {
 			if (n === null) {
 				return {entry: null, mutable: true};
 			} else {
 				// Inputs are 0-8. We want 1-9.
-				return {entry: {n: n + 1, pencil: false}, mutable: false};
+				return {entry: {n: n + 1, pencil: false}, mutable};
 			}
 		});
 		return new Puzzle(cells);
