@@ -11,50 +11,22 @@ import {
 } from "./utils";
 
 export function solveHiddenSingle(puzzle: Puzzle): Puzzle | null {
-	return solveHiddenSingleInRows(puzzle)
-		|| solveHiddenSingleInCols(puzzle)
-		|| solveHiddenSingleInHouses(puzzle);
+	return solveHiddenSingleInGroups(puzzle, coordsInRow)
+		|| solveHiddenSingleInGroups(puzzle, coordsInCol)
+		|| solveHiddenSingleInGroups(puzzle, coordsInHouse);
 }
 
-function solveHiddenSingleInRows(puzzle: Puzzle): Puzzle | null {
+function solveHiddenSingleInGroups(
+	puzzle: Puzzle,
+	coordsForGroup: (g: number) => Coord[]
+): Puzzle | null {
 	return firstMatchOrNull(
 		nineIndices,
-		y => solveHiddenSingleInRow(puzzle, y)
+		g => solveHiddenSingleInGroup(puzzle, coordsForGroup(g))
 	);
 }
 
-function solveHiddenSingleInRow(puzzle: Puzzle, y: number): Puzzle | null {
-	const coords = coordsInRow(y);
-	return firstMatchOrNull(
-		nineValues,
-		v => solveHiddenSingleForValueInGroup(puzzle, coords, v)
-	);
-}
-
-function solveHiddenSingleInCols(puzzle: Puzzle): Puzzle | null {
-	return firstMatchOrNull(
-		nineIndices,
-		x => solveHiddenSingleInCol(puzzle, x)
-	);
-}
-
-function solveHiddenSingleInCol(puzzle: Puzzle, x: number): Puzzle | null {
-	const coords = coordsInCol(x);
-	return firstMatchOrNull(
-		nineValues,
-		v => solveHiddenSingleForValueInGroup(puzzle, coords, v)
-	);
-}
-
-function solveHiddenSingleInHouses(puzzle: Puzzle): Puzzle | null {
-	return firstMatchOrNull(
-		nineIndices,
-		h => solveHiddenSingleInHouse(puzzle, h)
-	);
-}
-
-function solveHiddenSingleInHouse(puzzle: Puzzle, h: number): Puzzle | null {
-	const coords = coordsInHouse(h);
+function solveHiddenSingleInGroup(puzzle: Puzzle, coords: Coord[]): Puzzle | null {
 	return firstMatchOrNull(
 		nineValues,
 		v => solveHiddenSingleForValueInGroup(puzzle, coords, v)
@@ -66,7 +38,7 @@ function solveHiddenSingleForValueInGroup(
 	puzzle: Puzzle,
 	coords: Coord[],
 	v: number
-): Puzzle |  null {
+): Puzzle | null {
 	const candidates = coords
 		.map(c => enterIfValid(puzzle, c, v))
 		.filter(p => p !== null);
