@@ -119,6 +119,16 @@ export function flatMap<A, B>(a: ReadonlyArray<A>, f: ((el: A) => B[])): B[] {
 	return result;
 }
 
+export function any<T>(xs: ReadonlyArray<T>, predicate: (el: T) => boolean): boolean {
+	for (const x of xs) {
+		if (predicate(x)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 
 export const nineIndices = Object.freeze([0, 1, 2, 3, 4, 5, 6, 7, 8]);
 export const nineValues = Object.freeze([1, 2, 3, 4, 5, 6, 7, 8, 9]);
