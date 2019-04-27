@@ -1,5 +1,14 @@
 import {Coord, Puzzle} from "../Puzzle";
-import {acceptsNormal, allCoords, couldBeValid, firstMatchOrNull, nineIndices, nineValues, singleOrNull} from "./utils";
+import {
+	acceptsNormal,
+	allCoords,
+	couldBeValid,
+	enterIfValid,
+	firstMatchOrNull,
+	nineIndices,
+	nineValues,
+	singleOrNull
+} from "./utils";
 
 export function solveNakedSingle(puzzle: Puzzle): Puzzle | null {
 	return firstMatchOrNull(
@@ -14,16 +23,4 @@ export function solveNakedSingleInCell(puzzle: Puzzle, coord: Coord): Puzzle | n
 		.filter(s => s !== null);
 
 	return singleOrNull(solutions);
-}
-
-function enterIfValid(puzzle: Puzzle, coord: Coord, n: number): Puzzle | null {
-	if (acceptsNormal(puzzle, coord)) {
-		const updated = puzzle.setCell(coord, {n, pencil: false});
-
-		if (couldBeValid(updated, coord)) {
-			return updated;
-		}
-	}
-
-	return null;
 }

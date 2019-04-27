@@ -14,6 +14,18 @@ export function couldBeValid(puzzle: Puzzle, coord: Coord): boolean {
 	);
 }
 
+export function enterIfValid(puzzle: Puzzle, coord: Coord, n: number): Puzzle | null {
+	if (acceptsNormal(puzzle, coord)) {
+		const updated = puzzle.setCell(coord, {n, pencil: false});
+
+		if (couldBeValid(updated, coord)) {
+			return updated;
+		}
+	}
+
+	return null;
+}
+
 function rowHasConflicts(puzzle: Puzzle, y: number): boolean {
 	const coords = nineIndices.map(x => ({x, y}));
 	return groupHasConflicts(puzzle, coords);
@@ -56,6 +68,14 @@ export function houseContainingCoord(c: Coord): number {
 	return hy * 3 + hx;
 }
 
+export function coordsInRow(y: number): Coord[] {
+	return nineIndices.map(x => ({x, y}));
+}
+
+export function coordsInCol(x: number): Coord[] {
+	return nineIndices.map(y => ({x, y}));
+}
+
 export function coordsInHouse(h: number): Coord[] {
 	const yBase = Math.floor(h / 3) * 3;
 	const xBase = (h % 3) * 3;
@@ -66,7 +86,7 @@ export function coordsInHouse(h: number): Coord[] {
 }
 
 export function firstMatchOrNull<A, B>(
-	xs: A[],
+	xs: ReadonlyArray<A>,
 	f: (x: A) => (B | null)
 ): B | null {
 	for (const x of xs) {

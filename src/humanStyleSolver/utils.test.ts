@@ -1,5 +1,5 @@
 import {parsePuzzle} from "../testSupport/parsePuzzle";
-import {coordsInHouse, couldBeValid, houseContainingCoord} from "./utils";
+import {coordsInHouse, couldBeValid, firstMatchOrNull, houseContainingCoord} from "./utils";
 
 describe('utils', () => {
 	describe('couldBeValid', () => {
@@ -203,4 +203,17 @@ describe('utils', () => {
 		})
 	});
 
+	describe('firstMatchOrNull', () => {
+		it('returns the first non-null value returned by the func', () => {
+			const inputs = [1, 2, 3];
+			const f = (x: number) => x === 2 ? 'two' : null;
+			expect(firstMatchOrNull(inputs, f)).toEqual('two');
+		});
+
+		it('returns null if f never returns non-null', () => {
+			const inputs = [1, 2, 3];
+			const f = () => null;
+			expect(firstMatchOrNull(inputs, f)).toBeNull();
+		});
+	});
 });
