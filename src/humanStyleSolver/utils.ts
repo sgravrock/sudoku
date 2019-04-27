@@ -69,7 +69,30 @@ export function coordsInHouse(h: number): Coord[] {
 	});
 }
 
-function flatMap<A, B>(a: A[], f: ((el: A) => B[])): B[] {
+export function firstMatchOrNull<A, B>(
+	xs: A[],
+	f: (x: A) => (B | null)
+): B | null {
+	for (const x of xs) {
+		const r = f(x);
+
+		if (r !== null) {
+			return r;
+		}
+	}
+
+	return null;
+}
+
+export function singleOrNull<T>(xs: ReadonlyArray<T>): T | null {
+	if (xs.length === 1) {
+		return xs[0];
+	} else {
+		return null;
+	}
+}
+
+export function flatMap<A, B>(a: ReadonlyArray<A>, f: ((el: A) => B[])): B[] {
 	let result: B[] = [];
 
 	a.forEach(el => {
@@ -83,3 +106,6 @@ function flatMap<A, B>(a: A[], f: ((el: A) => B[])): B[] {
 
 export const nineIndices = Object.freeze([0, 1, 2, 3, 4, 5, 6, 7, 8]);
 export const nineValues = Object.freeze([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+export const allCoords = flatMap(nineIndices, x => {
+	return nineIndices.map(y => ({x, y}));
+});
