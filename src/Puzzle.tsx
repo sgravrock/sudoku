@@ -19,6 +19,11 @@ interface Cell {
 	mutable: boolean;
 }
 
+export interface Coord {
+	x: number;
+	y: number;
+}
+
 export class Puzzle {
 	private readonly _cells: Cell[];
 
@@ -38,13 +43,13 @@ export class Puzzle {
 		this._cells = cells;
 	}
 
-	cell(x: number, y: number): Cell {
-		return this._cells[9 * y + x];
+	cell(c: Coord): Cell {
+		return this._cells[9 * c.y + c.x];
 	}
 
-	setCell(x: number, y: number, entry: Entry | null): Puzzle {
+	setCell(c: Coord, entry: Entry | null): Puzzle {
 		const newCells = [...this._cells];
-		newCells[9 * y + x] = {entry, mutable: true};
+		newCells[9 * c.y + c.x] = {entry, mutable: true};
 		return new Puzzle(newCells);
 	}
 
@@ -58,8 +63,8 @@ export class Puzzle {
 		}));
 	}
 
-	hasNonPencilEntry(x: number, y: number): boolean {
-		const entry = this._cells[9 * y + x].entry;
+	hasNonPencilEntry(c: Coord): boolean {
+		const entry = this._cells[9 * c.y + c.x].entry;
 		return entry !== null && !entry.pencil;
 	}
 

@@ -7,19 +7,19 @@ describe('utils', () => {
 			const puzzle = parsePuzzle(`|123
 									    |456
 									    |789`);
-			expect(couldBeValid(puzzle, 1, 1)).toEqual(true);
+			expect(couldBeValid(puzzle, {x: 1, y: 1})).toEqual(true);
 		});
 
 		it("returns false if the entry's row has a conflict", () => {
 			const puzzle = parsePuzzle('122');
-			expect(couldBeValid(puzzle, 1, 0)).toEqual(false);
+			expect(couldBeValid(puzzle, {x: 1, y: 0})).toEqual(false);
 		});
 
 		it("returns false if the entry's column has a conflict", () => {
 			const puzzle = parsePuzzle(`|1
 										|2
 										|2`);
-			expect(couldBeValid(puzzle, 0, 1)).toEqual(false);
+			expect(couldBeValid(puzzle, {x: 0, y: 1})).toEqual(false);
 		});
 
 		describe("returns false if the entry's house has a conflict", () => {
@@ -27,21 +27,21 @@ describe('utils', () => {
 				const puzzle = parsePuzzle(`|123
 											|456
 											|785`);
-				expect(couldBeValid(puzzle, 0, 1)).toEqual(false);
+				expect(couldBeValid(puzzle, {x: 0, y: 1})).toEqual(false);
 			});
 
 			it('in house 1', () => {
 				const puzzle = parsePuzzle(`|   123
 											|   456
 											|   785`);
-				expect(couldBeValid(puzzle, 3, 0)).toEqual(false);
+				expect(couldBeValid(puzzle, {x: 3, y: 0})).toEqual(false);
 			});
 
 			it('in house 2', () => {
 				const puzzle = parsePuzzle(`|      123
 											|      456
 											|      785`);
-				expect(couldBeValid(puzzle, 6, 0)).toEqual(false);
+				expect(couldBeValid(puzzle, {x: 6, y: 0})).toEqual(false);
 			});
 
 			it('in house 3', () => {
@@ -51,7 +51,7 @@ describe('utils', () => {
 											|123
 											|456
 											|785`);
-				expect(couldBeValid(puzzle, 0, 3)).toEqual(false);
+				expect(couldBeValid(puzzle, {x: 0, y: 3})).toEqual(false);
 			});
 
 			it('in house 4', () => {
@@ -61,7 +61,7 @@ describe('utils', () => {
 											|   123
 											|   456
 											|   785`);
-				expect(couldBeValid(puzzle, 3, 3)).toEqual(false);
+				expect(couldBeValid(puzzle, {x: 3, y: 3})).toEqual(false);
 			});
 
 			it('in house 5', () => {
@@ -71,7 +71,7 @@ describe('utils', () => {
 											|      123
 											|      456
 											|      785`);
-				expect(couldBeValid(puzzle, 6, 3)).toEqual(false);
+				expect(couldBeValid(puzzle, {x: 6, y: 3})).toEqual(false);
 			});
 
 			it('in house 6', () => {
@@ -84,7 +84,7 @@ describe('utils', () => {
 											|123
 											|456
 											|785`);
-				expect(couldBeValid(puzzle, 0, 6)).toEqual(false);
+				expect(couldBeValid(puzzle, {x: 0, y: 6})).toEqual(false);
 			});
 
 			it('in house 7', () => {
@@ -97,7 +97,7 @@ describe('utils', () => {
 											|   123
 											|   456
 											|   785`);
-				expect(couldBeValid(puzzle, 3, 6)).toEqual(false);
+				expect(couldBeValid(puzzle, {x: 3, y: 6})).toEqual(false);
 			});
 
 			it('in house 8', () => {
@@ -110,7 +110,7 @@ describe('utils', () => {
 											|      123
 											|      456
 											|      785`);
-				expect(couldBeValid(puzzle, 6, 6)).toEqual(false);
+				expect(couldBeValid(puzzle, {x: 6, y: 6})).toEqual(false);
 			});
 
 		});

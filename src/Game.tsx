@@ -23,7 +23,7 @@ const Game: React.FunctionComponent<Props> = props => {
 	);
 
 	function onCellClick(x: number, y: number) {
-		setPuzzles([...puzzles, applyTool(tool, x, y, puzzle)]);
+		setPuzzles([...puzzles, applyTool(tool, {x, y}, puzzle)]);
 	}
 
 	function undo() {
@@ -38,7 +38,7 @@ const Game: React.FunctionComponent<Props> = props => {
 		const prevPuzzle = puzzles[puzzles.length - 2];
 		const {x, y, n} = findRegularNumChange(puzzle, prevPuzzle);
 		const tool: Tool = {type: 'number', pencil: true, n};
-		const newPuzzle = applyTool(tool, x, y, prevPuzzle)
+		const newPuzzle = applyTool(tool, {x, y}, prevPuzzle)
 		setPuzzles([...puzzles, newPuzzle]);
 		selectTool(tool);
 	}
@@ -119,8 +119,8 @@ interface RegularNumChange {
 function findRegularNumChange(newer: Puzzle, older: Puzzle): RegularNumChange {
 	for (let x = 0; x < 9; x++) {
 		for (let y = 0; y < 9; y++) {
-			const ne = newer.cell(x, y).entry;
-			const oe = older.cell(x, y).entry;
+			const ne = newer.cell({x, y}).entry;
+			const oe = older.cell({x, y}).entry;
 
 			if (isRegularNumEntry(ne) && !isRegularNumEntry(oe)) {
 				return {x, y, n: ne.n}

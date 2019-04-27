@@ -61,7 +61,7 @@ interface GridCellProps {
 
 const GridCell: React.FunctionComponent<GridCellProps> = props => {
 	const [selectedTool] = useCheckedContext(SelectedToolContext);
-	const cell = props.puzzle.cell(props.x, props.y);
+	const cell = props.puzzle.cell({x: props.x, y: props.y});
 
 	const isCurrentNormal = selectedTool.type === 'number' &&
 		cell.entry && !cell.entry.pencil &&

@@ -1,35 +1,26 @@
-import {Puzzle} from "../Puzzle";
+import {Coord, Puzzle} from "../Puzzle";
 import {acceptsNormal, allCoords, couldBeValid, firstMatchOrNull, nineIndices, nineValues, singleOrNull} from "./utils";
 
 export function solveNakedSingle(puzzle: Puzzle): Puzzle | null {
 	return firstMatchOrNull(
 		allCoords,
-		c => solveNakedSingleInCell(puzzle, c.x, c.y)
+		c => solveNakedSingleInCell(puzzle, c)
 	);
 }
 
-export function solveNakedSingleInCell(
-	puzzle: Puzzle,
-	x: number,
-	y: number
-): Puzzle | null {
+export function solveNakedSingleInCell(puzzle: Puzzle, coord: Coord): Puzzle | null {
 	const solutions = nineValues
-		.map(v => enterIfValid(puzzle, x, y, v))
+		.map(v => enterIfValid(puzzle, coord, v))
 		.filter(s => s !== null);
 
 	return singleOrNull(solutions);
 }
 
-function enterIfValid(
-	puzzle: Puzzle,
-	x: number,
-	y: number,
-	n: number
-): Puzzle | null {
-	if (acceptsNormal(puzzle, x, y)) {
-		const updated = puzzle.setCell(x, y, {n, pencil: false});
+function enterIfValid(puzzle: Puzzle, coord: Coord, n: number): Puzzle | null {
+	if (acceptsNormal(puzzle, coord)) {
+		const updated = puzzle.setCell(coord, {n, pencil: false});
 
-		if (couldBeValid(updated, x, y)) {
+		if (couldBeValid(updated, coord)) {
 			return updated;
 		}
 	}

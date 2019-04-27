@@ -1,15 +1,15 @@
 import {ToolEnabler} from "./ToolEnabler";
-import {Tool} from "./ToolPicker";
 import {Puzzle} from "../Puzzle";
+import {Tool} from "./index";
 
 describe('ToolEnabler', () => {
 	describe('isEnabled', () => {
 		describe('For a number with 8 or fewer entries', () => {
 			it('returns true', () => {
-				let puzzle = makePuzzle().setCell(0, 1, {n: 2, pencil: false});
+				let puzzle = makePuzzle().setCell({x: 0, y: 1}, {n: 2, pencil: false});
 
-				for (let i = 0; i < 8; i++) {
-					puzzle = puzzle.setCell(i, 0, {n: 1, pencil: false});
+				for (let x = 0; x < 8; x++) {
+					puzzle = puzzle.setCell({x, y: 0}, {n: 1, pencil: false});
 				}
 
 				const subject = new ToolEnabler(puzzle);
@@ -21,8 +21,8 @@ describe('ToolEnabler', () => {
 			it('returns false', () => {
 				let puzzle = makePuzzle();
 
-				for (let i = 0; i < 9; i++) {
-					puzzle = puzzle.setCell(i, 0, {n: 1, pencil: false});
+				for (let x = 0; x < 9; x++) {
+					puzzle = puzzle.setCell({x, y: 0}, {n: 1, pencil: false});
 				}
 
 				const subject = new ToolEnabler(puzzle);
@@ -32,10 +32,10 @@ describe('ToolEnabler', () => {
 
 		describe('For a number with 9 or more entries including pencil', () => {
 			it('returns true', () => {
-				let puzzle = makePuzzle().setCell(0, 0, {ns: [1], pencil: true});
+				let puzzle = makePuzzle().setCell({x: 0, y: 0}, {ns: [1], pencil: true});
 
-				for (let i = 1; i < 9; i++) {
-					puzzle = puzzle.setCell(i, 0, {n: 1, pencil: false});
+				for (let x = 1; x < 9; x++) {
+					puzzle = puzzle.setCell({x, y: 0}, {n: 1, pencil: false});
 				}
 
 				const subject = new ToolEnabler(puzzle);

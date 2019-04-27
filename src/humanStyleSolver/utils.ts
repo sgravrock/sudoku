@@ -1,20 +1,16 @@
-import {NonPencilEntry, Puzzle} from "../Puzzle";
+import {Coord, Puzzle} from "../Puzzle";
 
-export interface Coord {
-	x: number;
-	y: number;
-}
 
-export function acceptsNormal(puzzle: Puzzle, x: number, y: number): boolean {
-	const entry = puzzle.cell(x, y).entry;
+export function acceptsNormal(puzzle: Puzzle, coord: Coord): boolean {
+	const entry = puzzle.cell(coord).entry;
 	return entry === null || entry.pencil;
 }
 
-export function couldBeValid(puzzle: Puzzle, x: number, y: number): boolean {
+export function couldBeValid(puzzle: Puzzle, coord: Coord): boolean {
 	return !(
-		rowHasConflicts(puzzle, y)
-		|| colHasConflicts(puzzle, x)
-		|| houseHasConflicts(puzzle, x, y)
+		rowHasConflicts(puzzle, coord.y)
+		|| colHasConflicts(puzzle, coord.x)
+		|| houseHasConflicts(puzzle, coord)
 	);
 }
 
@@ -28,19 +24,19 @@ function colHasConflicts(puzzle: Puzzle, x: number): boolean {
 	return groupHasConflicts(puzzle, coords);
 }
 
-function houseHasConflicts(puzzle: Puzzle, x: number, y: number): boolean {
-	const coords = coordsInHouse(houseContainingCoord({x, y}));
+function houseHasConflicts(puzzle: Puzzle, coord: Coord): boolean {
+	const coords = coordsInHouse(houseContainingCoord(coord));
 	return groupHasConflicts(puzzle, coords);
 }
 
 function groupHasConflicts(
 	puzzle: Puzzle,
-	group:{x: number, y: number}[]
+	group: Coord[]
 ): boolean {
 	const numbers: number[] = [];
 
-	for (const {x, y} of group) {
-		const entry = puzzle.cell(x, y).entry;
+	for (const c of group) {
+		const entry = puzzle.cell(c).entry;
 
 		if (entry && !entry.pencil) {
 			if (numbers.includes(entry.n)) {

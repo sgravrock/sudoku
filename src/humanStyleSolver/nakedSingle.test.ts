@@ -18,14 +18,14 @@ describe('nakedSingle', () => {
 									   | 8
 									   | 3
 									   | 6`);
-			const expected = input.setCell(1, 0, {n: 9, pencil: false});
+			const expected = input.setCell({x: 1, y: 0}, {n: 9, pencil: false});
 			expect(solveNakedSingle(input)).toEqual(expected);
 		});
 
 		it('solves a row naked single', () => {
 			const input = parsePuzzle(`|
 									   | 12345678`);
-			const expected = input.setCell(0, 1, {n: 9, pencil: false});
+			const expected = input.setCell({x: 0, y: 1}, {n: 9, pencil: false});
 			expect(solveNakedSingle(input)).toEqual(expected);
 		});
 
@@ -33,7 +33,7 @@ describe('nakedSingle', () => {
 			const input = parsePuzzle(`|123
 									   |4 6
 									   |789`);
-			const expected = input.setCell(1, 1, {n: 5, pencil: false});
+			const expected = input.setCell({x: 1, y: 1}, {n: 5, pencil: false});
 			expect(solveNakedSingle(input)).toEqual(expected);
 		});
 
@@ -51,7 +51,7 @@ describe('nakedSingle', () => {
 									   |345
 									   |67
 									   |8`);
-			const expected = input.setCell(0, 0, {n: 9, pencil: false});
+			const expected = input.setCell({x: 0, y: 0}, {n: 9, pencil: false});
 			expect(solveNakedSingle(input)).toEqual(expected);
 		});
 
@@ -61,7 +61,7 @@ describe('nakedSingle', () => {
 
 			for (let x = 0; x < 9; x++) {
 				for (let y = 0; y < 9; y++) {
-					const input = solved.setCell(x, y, null);
+					const input = solved.setCell({x, y}, null);
 					expect(solveNakedSingle(input))
 						.withContext(`x=${x} y=${y}`)
 						.toEqual(solved);
@@ -72,25 +72,26 @@ describe('nakedSingle', () => {
 
 	describe('solveNakedSingleInCell', () => {
 		it('returns null when the cell is not a naked single', () => {
-			expect(solveNakedSingleInCell(emptyPuzzle, 0, 0)).toBeNull();
+			expect(solveNakedSingleInCell(emptyPuzzle, {x: 0, y: 0})).toBeNull();
 		});
 
 		it('returns null when the cell when the cell has a fixed entry', () => {
-			expect(solveNakedSingleInCell(solvedPuzzle(false), 0, 0)).toBeNull();
+			expect(solveNakedSingleInCell(solvedPuzzle(false), {x: 0, y: 0})).toBeNull();
 
 		});
 
 		it('returns null when the cell when the cell has a normal entry', () => {
-			expect(solveNakedSingleInCell(solvedPuzzle(true), 0, 0)).toBeNull();
+			expect(solveNakedSingleInCell(solvedPuzzle(true), {x: 0, y: 0})).toBeNull();
 		});
 
 		it('fills in a naked single', () => {
 			const basis = solvedPuzzle();
-			const n = (basis.cell(0, 0).entry as NonPencilEntry).n;
-			const puzzle = basis.setCell(0, 0, null);
-			const expected = basis.setCell(0, 0, {n, pencil: false});
+			const coord = {x: 0, y: 0}
+			const n = (basis.cell(coord).entry as NonPencilEntry).n;
+			const puzzle = basis.setCell(coord, null);
+			const expected = basis.setCell(coord, {n, pencil: false});
 
-			expect(solveNakedSingleInCell(puzzle, 0, 0)).toEqual(expected);
+			expect(solveNakedSingleInCell(puzzle, coord)).toEqual(expected);
 		});
 
 		// TODO fuzz "fills in any row naked single"

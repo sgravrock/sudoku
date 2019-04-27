@@ -6,20 +6,21 @@ describe('Puzzle', () => {
 			const input = [...arbitraryRawData];
 			input[0] = 0;
 			const result = Puzzle.fromRawCells(input);
-			expect(result.cell(0, 0).entry).toEqual({n: 1, pencil: false});
-			expect(result.cell(0, 1).entry).toBeNull();
+			expect(result.cell({x: 0, y: 0}).entry).toEqual({n: 1, pencil: false});
+			expect(result.cell({x: 0, y: 1}).entry).toBeNull();
 		});
 	});
 
 	describe('setCell', () => {
 		it('returns a new puzzle with the cell set', () => {
 			const subject = Puzzle.fromRawCells(arbitraryRawData);
-			const result = subject.setCell(3, 5, {ns: [7], pencil: true});
-			expect(result.cell(3, 5)).toEqual({
+			const coord = {x: 3, y: 5};
+			const result = subject.setCell(coord, {ns: [7], pencil: true});
+			expect(result.cell(coord)).toEqual({
 				entry: {ns: [7], pencil: true},
 				mutable: true}
 			);
-			expect(subject.cell(3, 5)).toEqual({entry: null, mutable: true});
+			expect(subject.cell(coord)).toEqual({entry: null, mutable: true});
 		});
 	});
 
@@ -45,14 +46,14 @@ describe('Puzzle', () => {
 
 		it('returns false when all cells are correct, empty, or pencil marks', () => {
 			const subject = Puzzle.fromRawCells(correctRawData())
-				.setCell(0, 0, null)
-				.setCell(0, 1, {ns: [9], pencil: true});
+				.setCell({x: 0, y: 0}, null)
+				.setCell({x: 0, y: 1}, {ns: [9], pencil: true});
 			expect(subject.hasErrors()).toEqual(false);
 		});
 
 		it('returns true when there are incorrect non-pencil entries', () => {
 			const subject = Puzzle.fromRawCells(correctRawData())
-				.setCell(0, 0, {n: 5, pencil: false});
+				.setCell({x: 0, y: 0}, {n: 5, pencil: false});
 			expect(subject.hasErrors()).toEqual(true);
 		});
 	})

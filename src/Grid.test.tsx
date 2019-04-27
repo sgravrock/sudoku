@@ -64,7 +64,7 @@ describe('Grid', () => {
 			null, null, null, null, null, null, null, null, null,
 			null, null, null, null, null, null, null, null, null,
 			null, null, null, null, null, null, null, null, null
-		]).setCell(0, 0, {ns: [1, 2, 3], pencil: true});
+		]).setCell({x: 0, y: 0}, {ns: [1, 2, 3], pencil: true});
 		const subject = renderGrid({puzzle});
 		const cell = subject.find('td').at(0);
 		expect(cell.text())
@@ -83,7 +83,7 @@ describe('Grid', () => {
 			null, null, null, null, null, null, null, null, null,
 			null, null, null, null, null, null, null, null, null,
 			null, null, null, null, null, null, null, null, null
-		]).setCell(0, 0, {ns: [1], pencil: true});
+		]).setCell({x: 0, y: 0}, {ns: [1], pencil: true});
 		const tool = {type: 'number', n: 1, pencil: true};
 		const subject = renderGrid({puzzle, tool});
 		const cells = subject.find('td');
