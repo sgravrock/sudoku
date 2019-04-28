@@ -121,7 +121,7 @@ describe('ToolApplier', () => {
 
 			it('does not erase given values', () => {
 				const coord = {x: 0, y: 0};
-				const puzzle = makePuzzle(0);
+				const puzzle = makePuzzle(1);
 				const result = applyTool({type: 'eraser'}, coord, puzzle);
 				expect(result.cell(coord).entry).toEqual({n: 1, pencil: false});
 			});

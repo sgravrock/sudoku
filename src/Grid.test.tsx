@@ -8,15 +8,15 @@ import {Tool} from "./Tools";
 describe('Grid', () => {
 	it('renders the specified puzzle', () => {
 		const puzzle = Puzzle.fromRawCells([
-			0, null, null, null, null, null, null, null, null,
-			null, 1, null, null, null, null, null, null, null,
-			null, null, 2, null, null, null, null, null, null,
-			null, null, null, 3, null, null, null, null, null,
-			null, null, null, null, 4, null, null, null, null,
-			null, null, null, null, null, 5, null, null, null,
-			null, null, null, null, null, null, 6, null, null,
-			null, null, null, null, null, null, null, 7, null,
-			null, null, null, null, null, null, null, null, 8
+			1, null, null, null, null, null, null, null, null,
+			null, 2, null, null, null, null, null, null, null,
+			null, null, 3, null, null, null, null, null, null,
+			null, null, null, 4, null, null, null, null, null,
+			null, null, null, null, 5, null, null, null, null,
+			null, null, null, null, null, 6, null, null, null,
+			null, null, null, null, null, null, 7, null, null,
+			null, null, null, null, null, null, null, 8, null,
+			null, null, null, null, null, null, null, null, 9
 		]);
 		const subject = renderGrid({puzzle});
 		const cellTexts = subject.find('tr').map(

@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
-// @ts-ignore
-import sudoku from 'sudoku';
+import * as sudoku from './oneValuedSudoku';
 import './App.css';
 import {Game} from "./Game";
 import {Puzzle} from "./Puzzle";

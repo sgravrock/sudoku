@@ -33,8 +33,6 @@ function toNumber(c: string): number | null {
 	if (c === ' ' ) {
 		return null;
 	} else {
-		// This is intended as input to Puzzle.fromString,
-		// which takes 0-based numbers.
-		return parseInt(c, 10) - 1;
+		return parseInt(c, 10);
 	}
 }

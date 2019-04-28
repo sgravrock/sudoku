@@ -5,7 +5,6 @@ import {findButtonByText} from "./testSupport/queries";
 import {Game} from "./Game";
 import {Grid} from "./Grid";
 
-
 describe('App', () => {
 	it('shows a blank puzzle', () => {
 		const subject = mount(<App />);

@@ -4,7 +4,6 @@ import {Game, nextToolFromKeystroke} from "./Game";
 import {Tool} from "./Tools";
 import {findButtonByText, findByLabelText} from "./testSupport/queries";
 import * as humanStyleSolver from './humanStyleSolver';
-import {Puzzle} from "./Puzzle";
 import {Grid} from "./Grid";
 import {Strategy} from "./humanStyleSolver";
 
@@ -31,8 +30,8 @@ describe('Game', () => {
 
 	it('highlights cells with the currently selected number', () => {
 		const puzzle = [...arbitraryPuzzle];
-		puzzle[0] = 1;
-		puzzle[1] = 2;
+		puzzle[0] = 2;
+		puzzle[1] = 3;
 		const subject = renderSubject({puzzle});
 		const cells = () => subject.find('.Grid td');
 
@@ -59,7 +58,7 @@ describe('Game', () => {
 
 			it('does not change cells with given values', () => {
 				const puzzle = [...arbitraryPuzzle];
-				puzzle[0] = 1; // becomes 2
+				puzzle[0] = 2;
 				const subject = renderSubject({puzzle});
 
 				selectRegularNumTool(subject, 1);
@@ -93,7 +92,7 @@ describe('Game', () => {
 
 			it('does not change cells with given values', () => {
 				const puzzle = [...arbitraryPuzzle];
-				puzzle[0] = 5;
+				puzzle[0] = 6;
 				const subject = renderSubject({puzzle});
 
 				selectPencilTool(subject, 1);
@@ -130,7 +129,7 @@ describe('Game', () => {
 
 			it('does not erase cells with given values', () => {
 				const puzzle = [...arbitraryPuzzle];
-				puzzle[0] = 0;
+				puzzle[0] = 1;
 				const subject = renderSubject({puzzle});
 
 				selectEraserTool(subject);
@@ -176,7 +175,7 @@ describe('Game', () => {
 
 	it('disables numbers that are fully entered', () => {
 		const puzzle = [
-			null, 0, 0, 0, 0, 0, 0, 0, 0,
+			null, 1, 1, 1, 1, 1, 1, 1, 1,
 			null, null, null, null, null, null, null, null, null,
 			null, null, null, null, null, null, null, null, null,
 			null, null, null, null, null, null, null, null, null,
@@ -217,15 +216,15 @@ describe('Game', () => {
 
 	it('shows "Solved! when the puzzle is correctly solved', () => {
 		const puzzle = [
-			null, 2, 0, 8, 3, 1, 6, 4, 5,
-			8, 3, 4, 5, 6, 0, 2, 1, 7,
-			6, 5, 1, 2, 4, 7, 8, 3, 0,
-			1, 8, 7, 6, 0, 5, 4, 2, 3,
-			2, 0, 6, 4, 7, 3, 1, 5, 8,
-			3, 4, 5, 1, 2, 8, 0, 7, 6,
-			5, 1, 3, 0, 8, 4, 7, 6, 2,
-			4, 6, 8, 7, 5, 2, 3, 0, 1,
-			0, 7, 2, 3, 1, 6, 5, 8, 4
+			null, 3, 1, 9, 4, 2, 7, 5, 6,
+			9, 4, 5, 6, 7, 1, 3, 2, 8,
+			7, 6, 2, 3, 5, 8, 9, 4, 1,
+			2, 9, 8, 7, 1, 6, 5, 3, 4,
+			3, 1, 7, 5, 8, 4, 2, 6, 9,
+			4, 5, 6, 2, 3, 9, 1, 8, 7,
+			6, 2, 4, 1, 9, 5, 8, 7, 3,
+			5, 7, 9, 8, 6, 3, 4, 1, 2,
+			1, 8, 3, 4, 2, 7, 6, 9, 5
 		];
 		const subject = renderSubject({puzzle});
 
@@ -318,15 +317,15 @@ describe('Game', () => {
 	describe('When the "Undo Until Solvable" button is clicked', () => {
 		it('reverts to the last state with no errors', () => {
 			const puzzle = [
-				null, null, 0, 8, 3, 1, 6, 4, 5,
-				8, 3, 4, 5, 6, 0, 2, 1, 7,
-				6, 5, 1, 2, 4, 7, 8, 3, 0,
-				1, 8, 7, 6, 0, 5, 4, 2, 3,
-				2, 0, 6, 4, 7, 3, 1, 5, 8,
-				3, 4, 5, 1, 2, 8, 0, 7, 6,
-				5, 1, 3, 0, 8, 4, 7, 6, 2,
-				4, 6, 8, 7, 5, 2, 3, 0, 1,
-				0, 7, 2, 3, 1, 6, 5, 8, 4
+				null, null, 1, 9, 4, 2, 7, 5, 6,
+				9, 4, 5, 6, 7, 1, 3, 2, 8,
+				7, 6, 2, 3, 5, 8, 9, 4, 1,
+				2, 9, 8, 7, 1, 6, 5, 3, 4,
+				3, 1, 7, 5, 8, 4, 2, 6, 9,
+				4, 5, 6, 2, 3, 9, 1, 8, 7,
+				6, 2, 4, 1, 9, 5, 8, 7, 3,
+				5, 7, 9, 8, 6, 3, 4, 1, 2,
+				1, 8, 3, 4, 2, 7, 6, 9, 5
 			];
 			const subject = renderSubject({puzzle});
 
@@ -342,15 +341,15 @@ describe('Game', () => {
 	describe('When the "Clear Pencil Marks" button is clicked', () => {
 		it('removes all pencil marks', () => {
 			const puzzle = [
-				null, null, null, 8, 3, 1, 6, 4, 5,
-				8, 3, 4, 5, 6, 0, 2, 1, 7,
-				6, 5, 1, 2, 4, 7, 8, 3, 0,
-				1, 8, 7, 6, 0, 5, 4, 2, 3,
-				2, 0, 6, 4, 7, 3, 1, 5, 8,
-				3, 4, 5, 1, 2, 8, 0, 7, 6,
-				5, 1, 3, 0, 8, 4, 7, 6, 2,
-				4, 6, 8, 7, 5, 2, 3, 0, 1,
-				0, 7, 2, 3, 1, 6, 5, 8, 4
+				null, null, null, 9, 4, 2, 7, 5, 6,
+				9, 4, 5, 6, 7, 1, 3, 2, 8,
+				7, 6, 2, 3, 5, 8, 9, 4, 1,
+				2, 9, 8, 7, 1, 6, 5, 3, 4,
+				3, 1, 7, 5, 8, 4, 2, 6, 9,
+				4, 5, 6, 2, 3, 9, 1, 8, 7,
+				6, 2, 4, 1, 9, 5, 8, 7, 3,
+				5, 7, 9, 8, 6, 3, 4, 1, 2,
+				1, 8, 3, 4, 2, 7, 6, 9, 5
 			];
 			const subject = renderSubject({puzzle});
 

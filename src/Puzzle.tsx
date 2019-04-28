@@ -1,5 +1,4 @@
-// @ts-ignore
-import sudoku from 'sudoku';
+import * as sudoku from './oneValuedSudoku';
 import {shallowEq} from "./equality";
 
 export interface NonPencilEntry {
@@ -31,9 +30,10 @@ export class Puzzle {
 		const cells = rawInput.map<Cell>(n => {
 			if (n === null) {
 				return {entry: null, mutable: true};
+			} else if (n < 1 || n > 9) {
+				throw new Error(`Cell value out of range: ${n}`);
 			} else {
-				// Inputs are 0-8. We want 1-9.
-				return {entry: {n: n + 1, pencil: false}, mutable};
+				return {entry: {n: n, pencil: false}, mutable};
 			}
 		});
 		return new Puzzle(cells);
@@ -88,8 +88,7 @@ export class Puzzle {
 	toRawCells(): (number|null)[] {
 		return this._cells.map(cell => {
 			if (cell.entry && !cell.entry.pencil) {
-				// We have 1-9. Outputs are 0-8.
-				return cell.entry.n - 1;
+				return cell.entry.n;
 			} else {
 				return null;
 			}
