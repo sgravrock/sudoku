@@ -2,6 +2,7 @@ import React from 'react';
 import {mount, ReactWrapper} from 'enzyme';
 import {Game, nextToolFromKeystroke} from "./Game";
 import {Tool} from "./Tools";
+import {findButtonByText, findByLabelText} from "./testSupport/queries";
 
 
 describe('Game', () => {
@@ -451,16 +452,6 @@ function cell(subject: ReactWrapper, cellIx: number): ReactWrapper {
 	return subject.find('.Grid td').at(cellIx);
 
 }
-
-function findByLabelText(root: ReactWrapper, labelText: string): ReactWrapper {
-	const label = root.findWhere(x => x.length === 1 && x.is('label') && x.text() === labelText);
-	return label.find('input');
-}
-
-function findButtonByText(root: ReactWrapper, text: string): ReactWrapper {
-	return root.findWhere(x => x.length === 1 && x.is('button') && x.text() === text);
-}
-
 
 interface OptionalProps {
 	puzzle?: (number | null)[];

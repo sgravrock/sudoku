@@ -3,6 +3,8 @@ import React, {useState} from 'react';
 import sudoku from 'sudoku';
 import './App.css';
 import {Game} from "./Game";
+import {Puzzle} from "./Puzzle";
+import {easyStrategies, solve} from "./humanStyleSolver";
 
 enum Difficulty {
 	Easy = 'Easy',
@@ -43,14 +45,28 @@ const DifficultyPicker: React.FC<{onChoice: (d: Difficulty) => void}> = props =>
 function puzzleWithDifficulty(difficulty: Difficulty): RawPuzzleData {
 	switch (difficulty) {
 		case Difficulty.Easy:
-			return puzzleWithRating(null, 1);
+			return easyPuzzle();
 		case Difficulty.Medium:
-			return puzzleWithRating(1, 2);
+			return puzzleWithRating(null, 1);
 		case Difficulty.Hard:
-			return puzzleWithRating(2, 3);
+			return puzzleWithRating(1, 2);
 		case Difficulty.Any:
 			return puzzleWithRating(null, null);
 	}
+}
+
+function easyPuzzle(): RawPuzzleData {
+	for (let i = 0; i < 1000; i++) {
+		const rawCells = sudoku.makepuzzle();
+		const puzzle = Puzzle.fromRawCells(rawCells);
+
+		if (solve(puzzle, easyStrategies).solved) {
+			return rawCells;
+		}
+	}
+
+	throw new Error("Could not make a puzzle with the requested difficulty");
+
 }
 
 function puzzleWithRating(min: number | null, max: number | null): RawPuzzleData {
@@ -59,13 +75,11 @@ function puzzleWithRating(min: number | null, max: number | null): RawPuzzleData
 		const rating = sudoku.ratepuzzle(puzzle, 4);
 
 		if ((min === null || rating >= min) && (max === null || rating < max)) {
-			console.log("Returning puzzle with rating", rating);
-			console.log("puzzle:", puzzle);
 			return puzzle;
 		}
 	}
 
-	throw new Error("Could not make a puzzle with the requsted difficulty");
+	throw new Error("Could not make a puzzle with the requested difficulty");
 }
 
 export {App};
