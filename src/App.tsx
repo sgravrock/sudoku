@@ -10,14 +10,16 @@ enum Difficulty {
 	Easy = 'Easy',
 	Medium = 'Medium',
 	Hard = 'Hard',
-	Any = 'Unlimited'
+	Any = 'Unlimited',
+	Blank = 'Blank'
 }
 
 const allDifficulties = [
 	Difficulty.Easy,
 	Difficulty.Medium,
 	Difficulty.Hard,
-	Difficulty.Any
+	Difficulty.Any,
+	Difficulty.Blank
 ];
 
 type RawPuzzleData = (number|null)[];
@@ -52,6 +54,8 @@ function puzzleWithDifficulty(difficulty: Difficulty): RawPuzzleData {
 			return puzzleWithRating(1.25, 2);
 		case Difficulty.Any:
 			return puzzleWithRating(null, null);
+		case Difficulty.Blank:
+			return blankPuzzle();
 	}
 }
 
@@ -92,6 +96,16 @@ function puzzlePassingTest(test: (rawCells: RawPuzzleData) => boolean): RawPuzzl
 	}
 
 	throw new Error("Could not make a puzzle with the requested difficulty");
+}
+
+function blankPuzzle(): RawPuzzleData {
+	const result = [];
+
+	for (let i = 0; i < 81; i++) {
+		result.push(null);
+	}
+
+	return result;
 }
 
 export {App};
