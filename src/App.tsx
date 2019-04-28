@@ -47,35 +47,47 @@ function puzzleWithDifficulty(difficulty: Difficulty): RawPuzzleData {
 		case Difficulty.Easy:
 			return easyPuzzle();
 		case Difficulty.Medium:
-			return puzzleWithRating(null, 1);
+			return puzzleWithRating(1, 1.25);
 		case Difficulty.Hard:
-			return puzzleWithRating(1, 2);
+			return puzzleWithRating(1.25, 2);
 		case Difficulty.Any:
 			return puzzleWithRating(null, null);
 	}
 }
 
 function easyPuzzle(): RawPuzzleData {
-	for (let i = 0; i < 1000; i++) {
-		const rawCells = sudoku.makepuzzle();
-		const puzzle = Puzzle.fromRawCells(rawCells);
+	return puzzlePassingTest(isEasy);
+}
 
-		if (solve(puzzle, easyStrategies).solved) {
-			return rawCells;
-		}
-	}
-
-	throw new Error("Could not make a puzzle with the requested difficulty");
+function isEasy(rawCells: RawPuzzleData) {
+	const puzzle = Puzzle.fromRawCells(rawCells);
+	return solve(puzzle, easyStrategies).solved;
 
 }
 
 function puzzleWithRating(min: number | null, max: number | null): RawPuzzleData {
-	for (let i = 0; i < 1000; i++) {
-		const puzzle = sudoku.makepuzzle();
-		const rating = sudoku.ratepuzzle(puzzle, 4);
+	return puzzlePassingTest(rawCells => {
+		const rating = sudoku.ratepuzzle(rawCells, 4);
 
-		if ((min === null || rating >= min) && (max === null || rating < max)) {
-			return puzzle;
+		if (!((min === null || rating >= min) && (max === null || rating < max))) {
+			return false;
+		}
+
+		// Do this after checking the rating because it's much slower
+		if (isEasy(rawCells)) {
+			return false;
+		}
+
+		return true;
+	});
+}
+
+function puzzlePassingTest(test: (rawCells: RawPuzzleData) => boolean): RawPuzzleData {
+	for (let i = 0; i < 1000; i++) {
+		const cells = sudoku.makepuzzle();
+
+		if (test(cells)) {
+			return cells;
 		}
 	}
 

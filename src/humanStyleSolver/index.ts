@@ -9,7 +9,12 @@ type Result = {
 	endState: Puzzle;
 }
 
-export const easyStrategies = [solveNakedSingle, solveHiddenSingle];
+export enum Grade {
+	Easy = 'Easy',
+	Unknown = 'Unknown'
+}
+
+export const easyStrategies = [solveHiddenSingle];
 
 export function solve(puzzle: Puzzle, strategies: Strategy[]): Result {
 	let lastState = puzzle;
@@ -24,5 +29,13 @@ export function solve(puzzle: Puzzle, strategies: Strategy[]): Result {
 		} else {
 			lastState = nextState;
 		}
+	}
+}
+
+export function grade(puzzle: Puzzle): Grade {
+	if (solve(puzzle, easyStrategies).solved) {
+		return Grade.Easy;
+	} else {
+		return Grade.Unknown;
 	}
 }
