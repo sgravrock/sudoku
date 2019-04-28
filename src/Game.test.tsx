@@ -3,6 +3,10 @@ import {mount, ReactWrapper} from 'enzyme';
 import {Game, nextToolFromKeystroke} from "./Game";
 import {Tool} from "./Tools";
 import {findButtonByText, findByLabelText} from "./testSupport/queries";
+import * as humanStyleSolver from './humanStyleSolver';
+import {Puzzle} from "./Puzzle";
+import {Grid} from "./Grid";
+import {Strategy} from "./humanStyleSolver";
 
 
 describe('Game', () => {
@@ -382,6 +386,41 @@ describe('Game', () => {
 			cell(subject, 1).simulate('click');
 			expect(cell(subject, 1).text()).toEqual('(8)');
 		});
+	});
+
+	describe('When Auto Solve is clicked', () => {
+		describe('with Easy Stratgies selected', () => {
+			it('attempts to solve the puzzle using only easy strategies', () => {
+				testAutoSolve('Easy strategies', humanStyleSolver.easyStrategies);
+			});
+		});
+
+		describe('with All Strategies selected', () => {
+			it('attempts to solve the puzzle using all known strategies', () => {
+				testAutoSolve('All strategies', humanStyleSolver.allStrategies);
+			});
+		});
+
+		function testAutoSolve(buttonText: string, expectedStrategies: Strategy[]) {
+			const input = [...arbitraryPuzzle];
+			input[0] = null;
+			const subject = renderSubject({puzzle: input});
+			const puzzleBeforeSolve = subject.find(Grid).prop('puzzle');
+			const solveResult = {
+				solved: false,
+				endState: puzzleBeforeSolve.setCell({x: 0, y: 0}, {n: 1, pencil: false})
+			};
+			spyOn(humanStyleSolver, 'solve').and.returnValue(solveResult);
+
+			findByLabelText(subject, buttonText).simulate('change', {target: {checked: true}});
+			findButtonByText(subject, 'Solve').simulate('click');
+
+			expect(humanStyleSolver.solve).toHaveBeenCalledWith(
+				puzzleBeforeSolve,
+				expectedStrategies
+			);
+			expect(subject.find(Grid)).toHaveProp('puzzle', solveResult.endState);
+		}
 	});
 });
 

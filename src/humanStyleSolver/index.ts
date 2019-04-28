@@ -3,8 +3,8 @@ import {solveHiddenSingle} from "./hiddenSingle";
 import {Puzzle} from "../Puzzle";
 import {firstMatchOrNull} from "./utils";
 
-type Strategy = (p: Puzzle) => Puzzle | null;
-type Result = {
+export type Strategy = (p: Puzzle) => Puzzle | null;
+export type Result = {
 	solved: boolean;
 	endState: Puzzle;
 }
@@ -15,6 +15,7 @@ export enum Grade {
 }
 
 export const easyStrategies = [solveHiddenSingle];
+export const allStrategies = [...easyStrategies, solveNakedSingle];
 
 export function solve(puzzle: Puzzle, strategies: Strategy[]): Result {
 	let lastState = puzzle;

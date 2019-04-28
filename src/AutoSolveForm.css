@@ -1,0 +1,11 @@
+.AutoSolveForm > Fieldset {
+	display: inline-block;
+}
+
+.AutoSolveForm > Fieldset > * {
+	display: block;
+}
+
+.AutoSolveForm-solveButton {
+	margin-top: 1em;
+}
