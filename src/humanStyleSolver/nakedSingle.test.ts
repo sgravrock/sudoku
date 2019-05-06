@@ -1,4 +1,4 @@
-import {NonPencilEntry, Puzzle} from "../Puzzle";
+import {NonPencilEntry, PencilEntry, Puzzle} from "../Puzzle";
 import {solveNakedSingle, solveNakedSingleInCell} from "./nakedSingle";
 import {parsePuzzle} from "../testSupport/parsePuzzle";
 
@@ -19,6 +19,25 @@ describe('nakedSingle', () => {
 									   | 3
 									   | 6`);
 			const expected = input.setCell({x: 1, y: 0}, {n: 9, pencil: false});
+			expect(solveNakedSingle(input)).toEqual(expected);
+		});
+
+		it('removes conflicting pencil marks', () => {
+			const base = parsePuzzle(`|
+									  | 1
+									  | 2
+									  | 7
+									  | 4
+									  | 5
+									  | 8
+									  | 3
+									  | 6`);
+			const input = base
+				.setCell({x: 0, y: 1}, {ns: [9], pencil: true})
+				.setCell({x: 3, y: 0}, {ns: [9, 8], pencil: true});
+			const expected = base
+				.setCell({x: 1, y: 0}, {n: 9, pencil: false})
+				.setCell({x: 3, y: 0}, {ns: [8], pencil: true});
 			expect(solveNakedSingle(input)).toEqual(expected);
 		});
 

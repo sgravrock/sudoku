@@ -1,4 +1,4 @@
-import {Coord, Puzzle} from "../Puzzle";
+import {Coord, Puzzle, removeAffectedPencils} from "../Puzzle";
 
 
 export function acceptsNormal(puzzle: Puzzle, coord: Coord): boolean {
@@ -19,7 +19,7 @@ export function enterIfValid(puzzle: Puzzle, coord: Coord, n: number): Puzzle | 
 		const updated = puzzle.setCell(coord, {n, pencil: false});
 
 		if (couldBeValid(updated, coord)) {
-			return updated;
+			return removeAffectedPencils(updated, coord, n);
 		}
 	}
 
