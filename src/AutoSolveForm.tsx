@@ -4,11 +4,13 @@ import './AutoSolveForm.css';
 
 interface Props {
 	solve: (strategies: Strategy[]) => void;
+	solveOneCell: () => void;
 }
 
 enum Button {
 	Easy = 'easy',
-	All = 'all'
+	All = 'all',
+	OneCell = 'a single cell'
 }
 
 const AutoSolveForm: React.FC<Props> = props => {
@@ -22,6 +24,15 @@ const AutoSolveForm: React.FC<Props> = props => {
 				return allStrategies;
 			default:
 				throw new Error(`Unknown button: ${selectedButton}`);
+		}
+	}
+
+
+	function solveClicked() {
+		if (selectedButton === Button.OneCell) {
+			props.solveOneCell();
+		} else {
+			props.solve(selectedStrategy());
 		}
 	}
 
@@ -47,10 +58,19 @@ const AutoSolveForm: React.FC<Props> = props => {
 					/>
 					All strategies
 				</label>
+				<label>
+					<input
+						type="radio"
+						name="strategies"
+						value={Button.OneCell}
+						onChange={e => setSelectedButton(Button.OneCell)}
+					/>
+					Solve a single cell
+				</label>
 				<button
 					className="AutoSolveForm-solveButton"
 					disabled={!selectedButton}
-					onClick={() => props.solve(selectedStrategy())}
+					onClick={solveClicked}
 				>
 					Solve
 				</button>

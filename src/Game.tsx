@@ -7,7 +7,7 @@ import {ToolEnabler} from "./Tools/ToolEnabler";
 import {Tool} from "./Tools";
 import './Game.css';
 import {AutoSolveForm} from "./AutoSolveForm";
-import {solve, Strategy} from "./humanStyleSolver";
+import * as humanStyleSolver from "./humanStyleSolver";
 
 interface Props {
 	puzzleData: (number | null)[];
@@ -63,9 +63,19 @@ const Game: React.FunctionComponent<Props> = props => {
 		setPuzzles([...puzzles, puzzles[0]]);
 	}
 
-	function autoSolve(strategies: Strategy[]) {
-		const result = solve(puzzle, strategies);
+	function autoSolve(strategies: humanStyleSolver.Strategy[]) {
+		const result = humanStyleSolver.solve(puzzle, strategies);
 		setPuzzles([...puzzles, result.endState]);
+	}
+
+	function solveOneCell() {
+		const result = humanStyleSolver.solveOneCell(puzzle);
+
+		if (result) {
+			setPuzzles([...puzzles, result]);
+		} else {
+			window.alert("Could not solve any cells.");
+		}
 	}
 
 	return (
@@ -83,7 +93,7 @@ const Game: React.FunctionComponent<Props> = props => {
 					<button onClick={clearPencilMarks}>Clear Pencil Marks</button>
 					<button onClick={reset}>Start Over</button>
 
-					<AutoSolveForm solve={autoSolve} />
+					<AutoSolveForm solve={autoSolve} solveOneCell={solveOneCell} />
 				</div>
 			</div>
 		</SelectedToolContext.Provider>

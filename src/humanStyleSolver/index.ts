@@ -33,6 +33,10 @@ export function solve(puzzle: Puzzle, strategies: Strategy[]): Result {
 	}
 }
 
+export function solveOneCell(puzzle: Puzzle): Puzzle | null {
+	return firstMatchOrNull(allStrategies, s => s(puzzle));
+}
+
 export function grade(puzzle: Puzzle): Grade {
 	if (solve(puzzle, easyStrategies).solved) {
 		return Grade.Easy;

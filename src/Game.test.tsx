@@ -400,6 +400,47 @@ describe('Game', () => {
 			});
 		});
 
+		describe('with Solve One Cell clicked', () => {
+			it('attempts to solve one cell', () => {
+				const input = [...arbitraryPuzzle];
+				input[0] = null;
+				const subject = renderSubject({puzzle: input});
+				const puzzleBeforeSolve = subject.find(Grid).prop('puzzle');
+				const solveResult = puzzleBeforeSolve.setCell(
+					{x: 0, y: 0},
+					{n: 1, pencil: false}
+				);
+				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue(solveResult);
+
+				findByLabelText(subject, 'Solve a single cell').simulate(
+					'change',
+					{target: {checked: true}}
+				);
+				findButtonByText(subject, 'Solve').simulate('click');
+
+				expect(humanStyleSolver.solveOneCell).toHaveBeenCalledWith(
+					puzzleBeforeSolve
+				);
+				expect(subject.find(Grid)).toHaveProp('puzzle', solveResult);
+			});
+
+			it('shows an alert when no cells can be solved', () => {
+				const subject = renderSubject({});
+				const puzzleBeforeSolve = subject.find(Grid).prop('puzzle');
+				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue(null);
+				spyOn(window, 'alert');
+
+				findByLabelText(subject, 'Solve a single cell').simulate(
+					'change',
+					{target: {checked: true}}
+				);
+				findButtonByText(subject, 'Solve').simulate('click');
+
+				expect(subject.find(Grid)).toHaveProp('puzzle', puzzleBeforeSolve);
+				expect(window.alert).toHaveBeenCalledWith('Could not solve any cells.');
+			});
+		});
+
 		function testAutoSolve(buttonText: string, expectedStrategies: Strategy[]) {
 			const input = [...arbitraryPuzzle];
 			input[0] = null;
