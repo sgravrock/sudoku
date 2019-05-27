@@ -41,3 +41,7 @@
 	color: red;
 	font-weight: bold;
 }
+
+.GridCell-autoSolved {
+	outline: 3px solid red;
+}

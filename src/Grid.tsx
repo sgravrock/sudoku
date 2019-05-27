@@ -2,7 +2,7 @@ import React from "react";
 // @ts-ignore
 import classNames from 'class-names';
 import './Grid.css';
-import {Entry, Puzzle} from "./Puzzle";
+import {Coord, Entry, Puzzle} from "./Puzzle";
 import {SelectedToolContext} from "./Tools/ToolPicker";
 import {useCheckedContext} from "./useCheckedContext";
 
@@ -10,6 +10,7 @@ const nine = Object.freeze([0, 1, 2, 3, 4, 5, 6, 7, 8]);
 
 interface GridProps {
 	puzzle: Puzzle;
+	autoSolvedCell: Coord | null;
 	onCellClick: (x: number, y: number) => void;
 }
 
@@ -22,6 +23,7 @@ const Grid: React.FunctionComponent<GridProps> = props => {
 						key={y}
 						y={y}
 						puzzle={props.puzzle}
+						autoSolvedCell={props.autoSolvedCell}
 						onCellClick={props.onCellClick}
 					/>
 				))}
@@ -33,6 +35,7 @@ const Grid: React.FunctionComponent<GridProps> = props => {
 interface GridRowProps {
 	puzzle: Puzzle;
 	y: number;
+	autoSolvedCell: Coord | null;
 	onCellClick: (x: number, y: number) => void;
 }
 
@@ -45,6 +48,7 @@ const GridRow: React.FunctionComponent<GridRowProps> = props => {
 					x={x}
 					y={props.y}
 					puzzle={props.puzzle}
+					autoSolvedCell={props.autoSolvedCell}
 					onClick={props.onCellClick}
 				/>
 			))}
@@ -56,6 +60,7 @@ interface GridCellProps {
 	puzzle: Puzzle;
 	x: number;
 	y: number;
+	autoSolvedCell: Coord | null;
 	onClick: (x: number, y: number) => void;
 }
 
@@ -69,10 +74,14 @@ const GridCell: React.FunctionComponent<GridCellProps> = props => {
 	const isCurrentPencil = selectedTool.type === 'number' &&
 		cell.entry && cell.entry.pencil &&
 		cell.entry.ns.includes(selectedTool.n);
+	const isAutoSolved = props.autoSolvedCell &&
+		props.autoSolvedCell.x === props.x &&
+		props.autoSolvedCell.y === props.y;
 	const className = classNames({
 		'GridCell-immutable': !cell.mutable,
 		'GridCell-current': isCurrentNormal,
-		'GridCell-current-pencil': isCurrentPencil
+		'GridCell-current-pencil': isCurrentPencil,
+		'GridCell-autoSolved': isAutoSolved,
 	});
 
 	const text = (function() {

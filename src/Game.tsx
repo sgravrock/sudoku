@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from "react";
 import {Grid} from "./Grid";
 import {SelectedToolContext, ToolPicker} from "./Tools/ToolPicker";
-import {isRegularNumEntry, Puzzle} from "./Puzzle";
+import {Coord, isRegularNumEntry, Puzzle} from "./Puzzle";
 import {applyTool} from "./Tools/ToolApplier";
 import {ToolEnabler} from "./Tools/ToolEnabler";
 import {Tool} from "./Tools";
@@ -16,6 +16,7 @@ interface Props {
 const Game: React.FunctionComponent<Props> = props => {
 	const [puzzles, setPuzzles] = useState(() => [Puzzle.fromRawCells(props.puzzleData)]);
 	const [tool, selectTool] = useState<Tool>({type: 'number', n: 1, pencil: false});
+	const [autoSolvedCell, setAutoSolvedCell] = useState<Coord|null>(null);
 	const puzzle = puzzles[puzzles.length - 1];
 	const toolEnabler = useMemo(() => new ToolEnabler(puzzle), [puzzle]);
 
@@ -26,6 +27,7 @@ const Game: React.FunctionComponent<Props> = props => {
 
 	function onCellClick(x: number, y: number) {
 		setPuzzles([...puzzles, applyTool(tool, {x, y}, puzzle)]);
+		setAutoSolvedCell(null);
 	}
 
 	function undo() {
@@ -40,7 +42,7 @@ const Game: React.FunctionComponent<Props> = props => {
 		const prevPuzzle = puzzles[puzzles.length - 2];
 		const {x, y, n} = findRegularNumChange(puzzle, prevPuzzle);
 		const tool: Tool = {type: 'number', pencil: true, n};
-		const newPuzzle = applyTool(tool, {x, y}, prevPuzzle)
+		const newPuzzle = applyTool(tool, {x, y}, prevPuzzle);
 		setPuzzles([...puzzles, newPuzzle]);
 		selectTool(tool);
 	}
@@ -73,6 +75,7 @@ const Game: React.FunctionComponent<Props> = props => {
 
 		if (result) {
 			setPuzzles([...puzzles, result.puzzle]);
+			setAutoSolvedCell(result.changedCell);
 			// Allow the cell update to appear before the alert blocks rendering
 			setTimeout(() => {
 				window.alert(
@@ -90,7 +93,11 @@ const Game: React.FunctionComponent<Props> = props => {
 			<div className="Game">
 				<div className="Game-main">
 					{puzzle.isSolved() ? <h1>Solved!</h1> : ''}
-					<Grid puzzle={puzzle} onCellClick={onCellClick}/>
+					<Grid
+						puzzle={puzzle}
+						autoSolvedCell={autoSolvedCell}
+						onCellClick={onCellClick}
+					/>
 				</div>
 				<div className="Game-tools">
 					<ToolPicker enabler={toolEnabler}/>

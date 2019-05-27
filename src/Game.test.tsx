@@ -433,6 +433,18 @@ describe('Game', () => {
 				expect(subject.find(Grid)).toHaveProp('puzzle', solveResult.puzzle);
 			});
 
+			it('shows an alert when no cells can be solved', () => {
+				const subject = renderSubject({});
+				const puzzleBeforeSolve = subject.find(Grid).prop('puzzle');
+				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue(null);
+				spyOn(window, 'alert');
+
+				solveOneCell(subject);
+
+				expect(subject.find(Grid)).toHaveProp('puzzle', puzzleBeforeSolve);
+				expect(window.alert).toHaveBeenCalledWith('Could not solve any cells.');
+			});
+
 			it('tells the user what was done', () => {
 				const subject = renderSubject({});
 				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue({
@@ -450,16 +462,32 @@ describe('Game', () => {
 				);
 			});
 
-			it('shows an alert when no cells can be solved', () => {
+			it('highlights the solved cell', () => {
 				const subject = renderSubject({});
-				const puzzleBeforeSolve = subject.find(Grid).prop('puzzle');
-				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue(null);
-				spyOn(window, 'alert');
+				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue({
+					puzzle: parsePuzzle(''),
+					strategy: '',
+					changedCell: {x: 3, y: 0}
+				});
 
 				solveOneCell(subject);
 
-				expect(subject.find(Grid)).toHaveProp('puzzle', puzzleBeforeSolve);
-				expect(window.alert).toHaveBeenCalledWith('Could not solve any cells.');
+				expect(cell(subject, 3)).toHaveClassName('GridCell-autoSolved');
+			});
+
+			it('removes the highlight when another move is made', () => {
+				const subject = renderSubject({});
+				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue({
+					puzzle: parsePuzzle(''),
+					strategy: '',
+					changedCell: {x: 3, y: 0}
+				});
+
+				solveOneCell(subject);
+				selectRegularNumTool(subject, 1);
+				clickFirstCell(subject);
+
+				expect(cell(subject, 3)).not.toHaveClassName('GridCell-autoSolved');
 			});
 
 			function solveOneCell(subject: ReactWrapper) {
