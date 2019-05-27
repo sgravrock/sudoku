@@ -475,7 +475,7 @@ describe('Game', () => {
 				expect(cell(subject, 3)).toHaveClassName('GridCell-autoSolved');
 			});
 
-			it('removes the highlight when another move is made', () => {
+			it('updates the highlight across moves and undos', () => {
 				const subject = renderSubject({});
 				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue({
 					puzzle: parsePuzzle(''),
@@ -488,6 +488,8 @@ describe('Game', () => {
 				clickFirstCell(subject);
 
 				expect(cell(subject, 3)).not.toHaveClassName('GridCell-autoSolved');
+				findButtonByText(subject, 'Undo').simulate('click');
+				expect(cell(subject, 3)).toHaveClassName('GridCell-autoSolved');
 			});
 
 			function solveOneCell(subject: ReactWrapper) {

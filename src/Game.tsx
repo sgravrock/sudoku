@@ -13,11 +13,20 @@ interface Props {
 	puzzleData: (number | null)[];
 }
 
+interface GridState {
+	puzzle: Puzzle;
+	autoSolvedCell: Coord | null;
+}
+
 const Game: React.FunctionComponent<Props> = props => {
-	const [puzzles, setPuzzles] = useState(() => [Puzzle.fromRawCells(props.puzzleData)]);
+	const [gridStates, setGridStates] = useState<GridState[]>(() => [
+		{
+			puzzle: Puzzle.fromRawCells(props.puzzleData),
+			autoSolvedCell: null
+		}
+	]);
 	const [tool, selectTool] = useState<Tool>({type: 'number', n: 1, pencil: false});
-	const [autoSolvedCell, setAutoSolvedCell] = useState<Coord|null>(null);
-	const puzzle = puzzles[puzzles.length - 1];
+	const puzzle = gridStates[gridStates.length - 1].puzzle;
 	const toolEnabler = useMemo(() => new ToolEnabler(puzzle), [puzzle]);
 
 	useDocumentKeydown(
@@ -25,57 +34,62 @@ const Game: React.FunctionComponent<Props> = props => {
 		[tool, selectTool]
 	);
 
+	function pushState(puzzle: Puzzle, autoSolvedCell: Coord | null = null) {
+		setGridStates([
+			...gridStates,
+			{puzzle, autoSolvedCell}
+		]);
+	}
+
 	function onCellClick(x: number, y: number) {
-		setPuzzles([...puzzles, applyTool(tool, {x, y}, puzzle)]);
-		setAutoSolvedCell(null);
+		pushState(applyTool(tool, {x, y}, puzzle));
 	}
 
 	function undo() {
-		if (puzzles.length > 1) {
-			const newPuzzles = [...puzzles];
-			newPuzzles.pop();
-			setPuzzles(newPuzzles);
+		if (gridStates.length > 1) {
+			const newStates = [...gridStates];
+			newStates.pop();
+			setGridStates(newStates);
 		}
 	}
 
 	function redoAsPencil() {
-		const prevPuzzle = puzzles[puzzles.length - 2];
+		const prevPuzzle = gridStates[gridStates.length - 2].puzzle;
 		const {x, y, n} = findRegularNumChange(puzzle, prevPuzzle);
 		const tool: Tool = {type: 'number', pencil: true, n};
 		const newPuzzle = applyTool(tool, {x, y}, prevPuzzle);
-		setPuzzles([...puzzles, newPuzzle]);
+		pushState(newPuzzle);
 		selectTool(tool);
 	}
 
 	function undoUntilSolvable() {
-		const newPuzzles = [...puzzles];
+		const newGridStates = [...gridStates];
 
-		while (newPuzzles[newPuzzles.length - 1].hasErrors()) {
-			newPuzzles.pop();
+		while (newGridStates[newGridStates.length - 1].puzzle.hasErrors()) {
+			newGridStates.pop();
 		}
 
-		setPuzzles(newPuzzles);
+		setGridStates(newGridStates);
 	}
 
 	function clearPencilMarks() {
-		setPuzzles([...puzzles, puzzle.clearPencilMarks()]);
+		pushState(puzzle.clearPencilMarks());
 	}
 
 	function reset() {
-		setPuzzles([...puzzles, puzzles[0]]);
+		pushState(gridStates[0].puzzle);
 	}
 
 	function autoSolve(strategies: humanStyleSolver.Strategy[]) {
 		const result = humanStyleSolver.solve(puzzle, strategies);
-		setPuzzles([...puzzles, result.endState]);
+		pushState(result.endState);
 	}
 
 	function solveOneCell() {
 		const result = humanStyleSolver.solveOneCell(puzzle);
 
 		if (result) {
-			setPuzzles([...puzzles, result.puzzle]);
-			setAutoSolvedCell(result.changedCell);
+			pushState(result.puzzle, result.changedCell);
 			// Allow the cell update to appear before the alert blocks rendering
 			setTimeout(() => {
 				window.alert(
@@ -95,7 +109,7 @@ const Game: React.FunctionComponent<Props> = props => {
 					{puzzle.isSolved() ? <h1>Solved!</h1> : ''}
 					<Grid
 						puzzle={puzzle}
-						autoSolvedCell={autoSolvedCell}
+						autoSolvedCell={gridStates[gridStates.length - 1].autoSolvedCell}
 						onCellClick={onCellClick}
 					/>
 				</div>
