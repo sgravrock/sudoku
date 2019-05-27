@@ -5,7 +5,8 @@ import {Tool} from "./Tools";
 import {findButtonByText, findByLabelText} from "./testSupport/queries";
 import * as humanStyleSolver from './humanStyleSolver';
 import {Grid} from "./Grid";
-import {Strategy} from "./humanStyleSolver";
+import {SingleMoveResult, Strategy} from "./humanStyleSolver";
+import {parsePuzzle} from "./testSupport/parsePuzzle";
 
 
 describe('Game', () => {
@@ -401,29 +402,52 @@ describe('Game', () => {
 		});
 
 		describe('with Solve One Cell clicked', () => {
+			beforeEach(() => {
+				jasmine.clock().install();
+			});
+
+			afterEach(() => {
+				jasmine.clock().uninstall();
+			});
+
 			it('attempts to solve one cell', () => {
 				const input = [...arbitraryPuzzle];
 				input[0] = null;
 				const subject = renderSubject({puzzle: input});
 				const puzzleBeforeSolve = subject.find(Grid).prop('puzzle');
-				const solveResult = puzzleBeforeSolve.setCell(
-					{x: 0, y: 0},
-					{n: 1, pencil: false}
-				);
-				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue({
-					puzzle: solveResult
-				});
+				const solveResult: SingleMoveResult = {
+					puzzle: puzzleBeforeSolve.setCell(
+						{x: 0, y: 0},
+						{n: 1, pencil: false}
+					),
+					changedCell: {x: 0, y: 0},
+					strategy: ''
+				};
+				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue(solveResult);
 
-				findByLabelText(subject, 'Solve a single cell').simulate(
-					'change',
-					{target: {checked: true}}
-				);
-				findButtonByText(subject, 'Solve').simulate('click');
+				solveOneCell(subject);
 
 				expect(humanStyleSolver.solveOneCell).toHaveBeenCalledWith(
 					puzzleBeforeSolve
 				);
-				expect(subject.find(Grid)).toHaveProp('puzzle', solveResult);
+				expect(subject.find(Grid)).toHaveProp('puzzle', solveResult.puzzle);
+			});
+
+			it('tells the user what was done', () => {
+				const subject = renderSubject({});
+				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue({
+					puzzle: parsePuzzle(''),
+					strategy: 'Naked Single',
+					changedCell: {x: 3, y: 5}
+				});
+				spyOn(window, 'alert');
+
+				solveOneCell(subject);
+				jasmine.clock().tick(0);
+
+				expect(window.alert).toHaveBeenCalledWith(
+					'Solved cell at x=3 y=5 via Naked Single'
+				);
 			});
 
 			it('shows an alert when no cells can be solved', () => {
@@ -432,15 +456,19 @@ describe('Game', () => {
 				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue(null);
 				spyOn(window, 'alert');
 
+				solveOneCell(subject);
+
+				expect(subject.find(Grid)).toHaveProp('puzzle', puzzleBeforeSolve);
+				expect(window.alert).toHaveBeenCalledWith('Could not solve any cells.');
+			});
+
+			function solveOneCell(subject: ReactWrapper) {
 				findByLabelText(subject, 'Solve a single cell').simulate(
 					'change',
 					{target: {checked: true}}
 				);
 				findButtonByText(subject, 'Solve').simulate('click');
-
-				expect(subject.find(Grid)).toHaveProp('puzzle', puzzleBeforeSolve);
-				expect(window.alert).toHaveBeenCalledWith('Could not solve any cells.');
-			});
+			}
 		});
 
 		function testAutoSolve(buttonText: string, expectedStrategies: Strategy[]) {

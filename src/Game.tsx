@@ -73,6 +73,13 @@ const Game: React.FunctionComponent<Props> = props => {
 
 		if (result) {
 			setPuzzles([...puzzles, result.puzzle]);
+			// Allow the cell update to appear before the alert blocks rendering
+			setTimeout(() => {
+				window.alert(
+					`Solved cell at x=${result.changedCell.x} ` +
+					`y=${result.changedCell.y} via ${result.strategy}`
+				);
+			}, 0);
 		} else {
 			window.alert("Could not solve any cells.");
 		}
