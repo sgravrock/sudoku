@@ -9,8 +9,9 @@ import {
 	nineValues,
 	singleOrNull
 } from "./utils";
+import {SingleMoveResult} from "./index";
 
-export function solveHiddenSingle(puzzle: Puzzle): Puzzle | null {
+export function solveHiddenSingle(puzzle: Puzzle): SingleMoveResult | null {
 	return solveHiddenSingleInGroups(puzzle, coordsInRow)
 		|| solveHiddenSingleInGroups(puzzle, coordsInCol)
 		|| solveHiddenSingleInGroups(puzzle, coordsInHouse);
@@ -19,14 +20,17 @@ export function solveHiddenSingle(puzzle: Puzzle): Puzzle | null {
 function solveHiddenSingleInGroups(
 	puzzle: Puzzle,
 	coordsForGroup: (g: number) => Coord[]
-): Puzzle | null {
+): SingleMoveResult | null {
 	return firstMatchOrNull(
 		nineIndices,
 		g => solveHiddenSingleInGroup(puzzle, coordsForGroup(g))
 	);
 }
 
-function solveHiddenSingleInGroup(puzzle: Puzzle, coords: Coord[]): Puzzle | null {
+function solveHiddenSingleInGroup(
+	puzzle: Puzzle,
+	coords: Coord[]
+): SingleMoveResult | null {
 	return firstMatchOrNull(
 		nineValues,
 		v => solveHiddenSingleForValueInGroup(puzzle, coords, v)
@@ -38,10 +42,18 @@ function solveHiddenSingleForValueInGroup(
 	puzzle: Puzzle,
 	coords: Coord[],
 	v: number
-): Puzzle | null {
+): SingleMoveResult | null {
 	const candidates = coords
-		.map(c => enterIfValid(puzzle, c, v))
-		.filter(p => p !== null);
+		.map(c => ({
+			coord: c,
+			puzzle: enterIfValid(puzzle, c, v)
+		}))
+		.filter(x => x.puzzle !== null);
 
-	return singleOrNull(candidates);
+	const maybeResult = singleOrNull(candidates);
+	return maybeResult && {
+		puzzle: maybeResult.puzzle!,
+		changedCell: maybeResult.coord,
+		strategy: 'Hidden Single'
+	};
 }

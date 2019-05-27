@@ -19,7 +19,11 @@ describe('nakedSingle', () => {
 									   | 3
 									   | 6`);
 			const expected = input.setCell({x: 1, y: 0}, {n: 9, pencil: false});
-			expect(solveNakedSingle(input)).toEqual(expected);
+			expect(solveNakedSingle(input)).toEqual({
+				puzzle: expected,
+				strategy: 'Naked Single',
+				changedCell: {x: 1, y: 0}
+			});
 		});
 
 		it('removes conflicting pencil marks', () => {
@@ -38,14 +42,18 @@ describe('nakedSingle', () => {
 			const expected = base
 				.setCell({x: 1, y: 0}, {n: 9, pencil: false})
 				.setCell({x: 3, y: 0}, {ns: [8], pencil: true});
-			expect(solveNakedSingle(input)).toEqual(expected);
+			expect(solveNakedSingle(input)!.puzzle).toEqual(expected);
 		});
 
 		it('solves a row naked single', () => {
 			const input = parsePuzzle(`|
 									   | 12345678`);
 			const expected = input.setCell({x: 0, y: 1}, {n: 9, pencil: false});
-			expect(solveNakedSingle(input)).toEqual(expected);
+			expect(solveNakedSingle(input)).toEqual({
+				puzzle: expected,
+				strategy: 'Naked Single',
+				changedCell: {x: 0, y: 1}
+			});
 		});
 
 		it('solves a house naked single', () => {
@@ -53,7 +61,11 @@ describe('nakedSingle', () => {
 									   |4 6
 									   |789`);
 			const expected = input.setCell({x: 1, y: 1}, {n: 5, pencil: false});
-			expect(solveNakedSingle(input)).toEqual(expected);
+			expect(solveNakedSingle(input)).toEqual({
+				puzzle: expected,
+				strategy: 'Naked Single',
+				changedCell: {x: 1, y: 1}
+			});
 		});
 
 		it("doesn't solve a hidden single that isn't a naked single", () => {
@@ -71,7 +83,11 @@ describe('nakedSingle', () => {
 									   |67
 									   |8`);
 			const expected = input.setCell({x: 0, y: 0}, {n: 9, pencil: false});
-			expect(solveNakedSingle(input)).toEqual(expected);
+			expect(solveNakedSingle(input)).toEqual({
+				puzzle: expected,
+				strategy: 'Naked Single',
+				changedCell: {x: 0, y: 0}
+			});
 		});
 
 		// TODO can we fuzz column, row, and house naked singles?
@@ -83,7 +99,11 @@ describe('nakedSingle', () => {
 					const input = solved.setCell({x, y}, null);
 					expect(solveNakedSingle(input))
 						.withContext(`x=${x} y=${y}`)
-						.toEqual(solved);
+						.toEqual({
+							puzzle: solved,
+							strategy: 'Naked Single',
+							changedCell: {x, y}
+						});
 				}
 			}
 		});
@@ -105,12 +125,16 @@ describe('nakedSingle', () => {
 
 		it('fills in a naked single', () => {
 			const basis = solvedPuzzle();
-			const coord = {x: 0, y: 0}
+			const coord = {x: 0, y: 0};
 			const n = (basis.cell(coord).entry as NonPencilEntry).n;
 			const puzzle = basis.setCell(coord, null);
 			const expected = basis.setCell(coord, {n, pencil: false});
 
-			expect(solveNakedSingleInCell(puzzle, coord)).toEqual(expected);
+			expect(solveNakedSingleInCell(puzzle, coord)).toEqual({
+				puzzle: expected,
+				changedCell: coord,
+				strategy: 'Naked Single'
+			});
 		});
 
 		// TODO fuzz "fills in any row naked single"

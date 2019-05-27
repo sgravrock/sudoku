@@ -1,10 +1,17 @@
 import {solveNakedSingle} from "./nakedSingle";
 import {solveHiddenSingle} from "./hiddenSingle";
-import {Puzzle} from "../Puzzle";
+import {Coord, Puzzle} from "../Puzzle";
 import {firstMatchOrNull} from "./utils";
 
-export type Strategy = (p: Puzzle) => Puzzle | null;
-export type Result = {
+export type Strategy = (p: Puzzle) => SingleMoveResult | null;
+
+export type SingleMoveResult = {
+	puzzle: Puzzle;
+	strategy: string;
+	changedCell: Coord;
+}
+
+type Result = {
 	solved: boolean;
 	endState: Puzzle;
 }
@@ -14,8 +21,8 @@ export enum Grade {
 	Unknown = 'Unknown'
 }
 
-export const easyStrategies = [solveHiddenSingle];
-export const allStrategies = [...easyStrategies, solveNakedSingle];
+export const easyStrategies: Strategy[] = [solveHiddenSingle];
+export const allStrategies: Strategy[] = [...easyStrategies, solveNakedSingle];
 
 export function solve(puzzle: Puzzle, strategies: Strategy[]): Result {
 	let lastState = puzzle;
@@ -25,16 +32,19 @@ export function solve(puzzle: Puzzle, strategies: Strategy[]): Result {
 
 		if (!nextState) {
 			return {solved: false, endState: lastState};
-		} else if (nextState.isSolved()) {
-			return {solved: true, endState: nextState};
+		} else if (nextState.puzzle.isSolved()) {
+			return {solved: true, endState: nextState.puzzle};
 		} else {
-			lastState = nextState;
+			lastState = nextState.puzzle;
 		}
 	}
 }
 
-export function solveOneCell(puzzle: Puzzle): Puzzle | null {
-	return firstMatchOrNull(allStrategies, s => s(puzzle));
+export function solveOneCell(
+	puzzle: Puzzle,
+	strategies: Strategy[] = allStrategies
+): SingleMoveResult | null {
+	return firstMatchOrNull(strategies, s => s(puzzle));
 }
 
 export function grade(puzzle: Puzzle): Grade {

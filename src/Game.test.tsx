@@ -410,7 +410,9 @@ describe('Game', () => {
 					{x: 0, y: 0},
 					{n: 1, pencil: false}
 				);
-				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue(solveResult);
+				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue({
+					puzzle: solveResult
+				});
 
 				findByLabelText(subject, 'Solve a single cell').simulate(
 					'change',

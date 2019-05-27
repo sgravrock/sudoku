@@ -1,5 +1,5 @@
 import {parsePuzzle} from "../testSupport/parsePuzzle";
-import {easyStrategies, grade, Grade, solve} from "./index";
+import {easyStrategies, grade, Grade, solve, solveOneCell} from "./index";
 
 
 describe('humanStyleSolver', () => {
@@ -59,6 +59,35 @@ describe('humanStyleSolver', () => {
 
 			const result = solve(puzzle, easyStrategies);
 			expect(result.solved).toEqual(false);
+		});
+	});
+
+	describe('solveOneCell', () => {
+		it('solves a single cell using the first strategy that succeeds', () => {
+			const puzzle = parsePuzzle('');
+			const expectedResult = {
+				puzzle: parsePuzzle('1'),
+				strategy: 'strategy 1',
+				changedCell: {x: 0, y: 0}
+			};
+			const strategies = [
+				jasmine.createSpy('strategy 0').and.returnValue(null),
+				jasmine.createSpy('strategy 1').and.returnValue(expectedResult),
+				jasmine.createSpy('strategy 2')
+			];
+
+			const actualResult = solveOneCell(puzzle, strategies);
+
+			expect(strategies[0]).toHaveBeenCalledWith(puzzle);
+			expect(strategies[1]).toHaveBeenCalledWith(puzzle);
+			expect(strategies[2]).not.toHaveBeenCalled();
+			expect(actualResult).toEqual(expectedResult);
+		});
+
+		it('returns null when no cell can be solved', () => {
+			const puzzle = parsePuzzle('');
+			const result = solveOneCell(puzzle, [() => null]);
+			expect(result).toBeNull();
 		});
 	});
 

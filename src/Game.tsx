@@ -72,7 +72,7 @@ const Game: React.FunctionComponent<Props> = props => {
 		const result = humanStyleSolver.solveOneCell(puzzle);
 
 		if (result) {
-			setPuzzles([...puzzles, result]);
+			setPuzzles([...puzzles, result.puzzle]);
 		} else {
 			window.alert("Could not solve any cells.");
 		}
