@@ -458,7 +458,7 @@ describe('Game', () => {
 				jasmine.clock().tick(0);
 
 				expect(window.alert).toHaveBeenCalledWith(
-					'Solved cell at x=3 y=5 via Naked Single'
+					'Solved cell at x=3 y=5 using Naked Single'
 				);
 			});
 
@@ -493,11 +493,7 @@ describe('Game', () => {
 			});
 
 			function solveOneCell(subject: ReactWrapper) {
-				findByLabelText(subject, 'Solve a single cell').simulate(
-					'change',
-					{target: {checked: true}}
-				);
-				findButtonByText(subject, 'Solve').simulate('click');
+				findButtonByText(subject, 'Solve a single cell').simulate('click');
 			}
 		});
 
@@ -512,8 +508,7 @@ describe('Game', () => {
 			};
 			spyOn(humanStyleSolver, 'solve').and.returnValue(solveResult);
 
-			findByLabelText(subject, buttonText).simulate('change', {target: {checked: true}});
-			findButtonByText(subject, 'Solve').simulate('click');
+			findButtonByText(subject, buttonText).simulate('click');
 
 			expect(humanStyleSolver.solve).toHaveBeenCalledWith(
 				puzzleBeforeSolve,

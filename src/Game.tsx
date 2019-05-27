@@ -6,8 +6,9 @@ import {applyTool} from "./Tools/ToolApplier";
 import {ToolEnabler} from "./Tools/ToolEnabler";
 import {Tool} from "./Tools";
 import './Game.css';
-import {AutoSolveForm} from "./AutoSolveForm";
 import * as humanStyleSolver from "./humanStyleSolver";
+import {easyStrategies} from "./humanStyleSolver";
+import {allStrategies} from "./humanStyleSolver";
 
 interface Props {
 	puzzleData: (number | null)[];
@@ -94,7 +95,7 @@ const Game: React.FunctionComponent<Props> = props => {
 			setTimeout(() => {
 				window.alert(
 					`Solved cell at x=${result.changedCell.x} ` +
-					`y=${result.changedCell.y} via ${result.strategy}`
+					`y=${result.changedCell.y} using ${result.strategy}`
 				);
 			}, 0);
 		} else {
@@ -117,11 +118,26 @@ const Game: React.FunctionComponent<Props> = props => {
 					<ToolPicker enabler={toolEnabler}/>
 					<button onClick={undo}>Undo</button>
 					<button onClick={redoAsPencil}>Redo Last As Pencil</button>
-					<button onClick={undoUntilSolvable}>Undo Until Solvable</button>
 					<button onClick={clearPencilMarks}>Clear Pencil Marks</button>
 					<button onClick={reset}>Start Over</button>
 
-					<AutoSolveForm solve={autoSolve} solveOneCell={solveOneCell} />
+					<div className="Game-hints">
+						<fieldset>
+							<legend>Hints</legend>
+							<button onClick={solveOneCell}>Solve a single cell</button>
+							<button onClick={undoUntilSolvable}>Undo Until Solvable</button>
+						</fieldset>
+
+						<fieldset>
+							<legend>Auto solve</legend>
+							<button onClick={() => autoSolve(easyStrategies)}>
+								Easy strategies
+							</button>
+							<button onClick={() => autoSolve(allStrategies)}>
+								All strategies
+							</button>
+						</fieldset>
+					</div>
 				</div>
 			</div>
 		</SelectedToolContext.Provider>

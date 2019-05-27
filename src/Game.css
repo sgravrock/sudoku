@@ -20,3 +20,15 @@
 .Game .AutoSolveForm {
 	margin-top: 2em;
 }
+
+.Game-hints {
+	margin-top: 1em;
+}
+
+.Game-hints > Fieldset {
+  display: inline-block;
+}
+
+.Game-hints > Fieldset > * {
+	display: block;
+}
