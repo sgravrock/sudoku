@@ -234,7 +234,7 @@ describe('Game', () => {
 
 		eraseFirstCell(subject);
 		enterRegularNumInFirstCell(subject, 8);
-		expect(subject.text()).toContain('Solved!');
+		expect(subject.find('.Game-main').text()).toContain('Solved!');
 	});
 
 	describe('nextToolFromKeystroke', () => {

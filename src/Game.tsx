@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {FC, useEffect, useMemo, useState} from "react";
 import {Grid} from "./Grid";
 import {SelectedToolContext, ToolPicker} from "./Tools/ToolPicker";
 import {Coord, isRegularNumEntry, Puzzle} from "./Puzzle";
@@ -9,25 +9,24 @@ import './Game.css';
 import * as humanStyleSolver from "./humanStyleSolver";
 import {easyStrategies} from "./humanStyleSolver";
 import {allStrategies} from "./humanStyleSolver";
+import {GridStateProvider, useGridState} from "./GridState";
 
 interface Props {
 	puzzleData: (number | null)[];
 }
 
-interface GridState {
-	puzzle: Puzzle;
-	autoSolvedCell: Coord | null;
-}
+const Game: FC<Props> = props => {
+	return (
+		<GridStateProvider initializer={() => Puzzle.fromRawCells(props.puzzleData)}>
+			<GameUi />;
+		</GridStateProvider>
+	)
+};
 
-const Game: React.FunctionComponent<Props> = props => {
-	const [gridStates, setGridStates] = useState<GridState[]>(() => [
-		{
-			puzzle: Puzzle.fromRawCells(props.puzzleData),
-			autoSolvedCell: null
-		}
-	]);
+const GameUi: FC<{}> = () => {
+	const gridState = useGridState();
 	const [tool, selectTool] = useState<Tool>({type: 'number', n: 1, pencil: false});
-	const puzzle = gridStates[gridStates.length - 1].puzzle;
+	const puzzle = gridState.current.puzzle;
 	const toolEnabler = useMemo(() => new ToolEnabler(puzzle), [puzzle]);
 
 	useDocumentKeydown(
@@ -35,62 +34,41 @@ const Game: React.FunctionComponent<Props> = props => {
 		[tool, selectTool]
 	);
 
-	function pushState(puzzle: Puzzle, autoSolvedCell: Coord | null = null) {
-		setGridStates([
-			...gridStates,
-			{puzzle, autoSolvedCell}
-		]);
-	}
-
 	function onCellClick(x: number, y: number) {
-		pushState(applyTool(tool, {x, y}, puzzle));
-	}
-
-	function undo() {
-		if (gridStates.length > 1) {
-			const newStates = [...gridStates];
-			newStates.pop();
-			setGridStates(newStates);
-		}
+		gridState.push({
+			puzzle: applyTool(tool, {x, y}, puzzle),
+			autoSolvedCell: null
+		});
 	}
 
 	function redoAsPencil() {
-		const prevPuzzle = gridStates[gridStates.length - 2].puzzle;
-		const {x, y, n} = findRegularNumChange(puzzle, prevPuzzle);
-		const tool: Tool = {type: 'number', pencil: true, n};
-		const newPuzzle = applyTool(tool, {x, y}, prevPuzzle);
-		pushState(newPuzzle);
+		const tool = gridState.redoAsPencil();
 		selectTool(tool);
 	}
 
-	function undoUntilSolvable() {
-		const newGridStates = [...gridStates];
-
-		while (newGridStates[newGridStates.length - 1].puzzle.hasErrors()) {
-			newGridStates.pop();
-		}
-
-		setGridStates(newGridStates);
-	}
-
 	function clearPencilMarks() {
-		pushState(puzzle.clearPencilMarks());
-	}
-
-	function reset() {
-		pushState(gridStates[0].puzzle);
+		gridState.push({
+			puzzle: puzzle.clearPencilMarks(),
+			autoSolvedCell: null
+		});
 	}
 
 	function autoSolve(strategies: humanStyleSolver.Strategy[]) {
 		const result = humanStyleSolver.solve(puzzle, strategies);
-		pushState(result.endState);
+		gridState.push({
+			puzzle: result.endState,
+			autoSolvedCell: null
+		});
 	}
 
 	function solveOneCell() {
 		const result = humanStyleSolver.solveOneCell(puzzle);
 
 		if (result) {
-			pushState(result.puzzle, result.changedCell);
+			gridState.push({
+				puzzle: result.puzzle,
+				autoSolvedCell: result.changedCell
+			});
 			// Allow the cell update to appear before the alert blocks rendering
 			setTimeout(() => {
 				window.alert(
@@ -110,22 +88,24 @@ const Game: React.FunctionComponent<Props> = props => {
 					{puzzle.isSolved() ? <h1>Solved!</h1> : ''}
 					<Grid
 						puzzle={puzzle}
-						autoSolvedCell={gridStates[gridStates.length - 1].autoSolvedCell}
+						autoSolvedCell={gridState.current.autoSolvedCell}
 						onCellClick={onCellClick}
 					/>
 				</div>
 				<div className="Game-tools">
 					<ToolPicker enabler={toolEnabler}/>
-					<button onClick={undo}>Undo</button>
+					<button onClick={gridState.undo}>Undo</button>
 					<button onClick={redoAsPencil}>Redo Last As Pencil</button>
 					<button onClick={clearPencilMarks}>Clear Pencil Marks</button>
-					<button onClick={reset}>Start Over</button>
+					<button onClick={gridState.reset}>Start Over</button>
 
 					<div className="Game-hints">
 						<fieldset>
 							<legend>Hints</legend>
 							<button onClick={solveOneCell}>Solve a single cell</button>
-							<button onClick={undoUntilSolvable}>Undo Until Solvable</button>
+							<button onClick={gridState.undoUntilSolvable}>
+								Undo Until Solvable
+							</button>
 						</fieldset>
 
 						<fieldset>
@@ -174,25 +154,5 @@ function useDocumentKeydown(handler: (key: string) => void, deps: any[]): void {
 		return () => document.removeEventListener('keydown', onKeyDown);
 	}, deps);
 }
-
-interface RegularNumChange {
-	x: number, y: number, n: number
-}
-
-function findRegularNumChange(newer: Puzzle, older: Puzzle): RegularNumChange {
-	for (let x = 0; x < 9; x++) {
-		for (let y = 0; y < 9; y++) {
-			const ne = newer.cell({x, y}).entry;
-			const oe = older.cell({x, y}).entry;
-
-			if (isRegularNumEntry(ne) && !isRegularNumEntry(oe)) {
-				return {x, y, n: ne.n}
-			}
-		}
-	}
-
-	throw new Error('findRegularNumChange found nothing');
-}
-
 
 export {Game};
