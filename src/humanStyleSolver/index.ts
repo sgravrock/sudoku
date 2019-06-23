@@ -28,6 +28,7 @@ export function solve(puzzle: Puzzle, strategies: Strategy[]): Result {
 	let lastState = puzzle;
 
 	while (true) {
+		// eslint-disable-next-line no-loop-func
 		const nextState = firstMatchOrNull(strategies, s => s(lastState));
 
 		if (!nextState) {

@@ -2,7 +2,7 @@ import React from "react";
 // @ts-ignore
 import classNames from 'class-names';
 import './Grid.css';
-import {Coord, Entry, Puzzle} from "./Puzzle";
+import {Coord, Puzzle} from "./Puzzle";
 import {useSelectedTool} from "./Tools/SelectedTool";
 
 const nine = Object.freeze([0, 1, 2, 3, 4, 5, 6, 7, 8]);
@@ -105,13 +105,5 @@ const GridCell: React.FunctionComponent<GridCellProps> = props => {
 		</td>
 	);
 };
-
-function entryHasNumber(entry: Entry, n: number) {
-	if (entry.pencil) {
-		return entry.ns.includes(n);
-	} else {
-		return entry.n === n;
-	}
-}
 
 export {Grid};

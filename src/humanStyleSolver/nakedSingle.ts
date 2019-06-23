@@ -1,11 +1,8 @@
 import {Coord, Puzzle} from "../Puzzle";
 import {
-	acceptsNormal,
 	allCoords,
-	couldBeValid,
 	enterIfValid,
 	firstMatchOrNull,
-	nineIndices,
 	nineValues,
 	singleOrNull
 } from "./utils";

@@ -32,10 +32,11 @@ const GameUi: FC<{}> = () => {
 	const puzzle = gridState.current.puzzle;
 	const toolEnabler = useMemo(() => new ToolEnabler(puzzle), [puzzle]);
 
-	useDocumentKeydown(
-		key => selectTool(nextToolFromKeystroke(tool, key)),
+	const onKeyDown = useMemo(
+		() => (key: string) => selectTool(nextToolFromKeystroke(tool, key)),
 		[tool, selectTool]
 	);
+	useDocumentKeydown(onKeyDown);
 
 	function onCellClick(x: number, y: number) {
 		gridState.push({
@@ -144,7 +145,7 @@ export function nextToolFromKeystroke(tool: Tool, key: string): Tool {
 	}
 }
 
-function useDocumentKeydown(handler: (key: string) => void, deps: any[]): void {
+function useDocumentKeydown(handler: (key: string) => void): void {
 	// Warning: there's currently no test coverage for this.
 	useEffect(() => {
 		function onKeyDown(e: KeyboardEvent) {
@@ -153,7 +154,7 @@ function useDocumentKeydown(handler: (key: string) => void, deps: any[]): void {
 
 		document.addEventListener('keydown', onKeyDown);
 		return () => document.removeEventListener('keydown', onKeyDown);
-	}, deps);
+	}, [handler]);
 }
 
 export {Game};
