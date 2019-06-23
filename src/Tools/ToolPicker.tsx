@@ -1,16 +1,12 @@
-import React, {createContext} from 'react';
+import React from 'react';
 // @ts-ignore
 import classNames from 'class-names';
 import {shallowEq} from "../equality";
-import {useCheckedContext} from "../useCheckedContext";
 import {IToolEnabler} from "./ToolEnabler";
 import {Tool} from "./index";
 import './ToolPicker.css';
+import {useSelectedTool} from "./SelectedTool";
 
-
-type SelectedToolContextValue = [Tool, (tool: Tool) => void];
-
-export const SelectedToolContext = createContext<SelectedToolContextValue>(null!);
 
 const ToolPicker: React.FunctionComponent<{enabler: IToolEnabler}> = props => {
 	return (
@@ -80,7 +76,7 @@ interface ToolButtonProps {
 }
 
 export const ToolButton: React.FunctionComponent<ToolButtonProps> = props => {
-	const [selectedTool, selectTool] = useCheckedContext(SelectedToolContext);
+	const [selectedTool, selectTool] = useSelectedTool();
 	const checked = shallowEq(props.tool, selectedTool);
 	function text() {
 		switch (props.tool.type) {

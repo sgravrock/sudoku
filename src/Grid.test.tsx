@@ -2,8 +2,8 @@ import React from 'react';
 import {mount} from 'enzyme';
 import {Grid} from "./Grid";
 import {Puzzle} from "./Puzzle";
-import {SelectedToolContext} from './Tools/ToolPicker';
 import {Tool} from "./Tools";
+import {SelectedToolProvider} from "./Tools/SelectedTool";
 
 describe('Grid', () => {
 	it('renders the specified puzzle', () => {
@@ -101,9 +101,9 @@ interface Props {
 function renderGrid(props: Props) {
 	const tool = props.tool || arbitraryTool();
 	return mount(
-		<SelectedToolContext.Provider value={[tool, () => {}]}>
-			<Grid puzzle={props.puzzle} onCellClick={() => {}} />)
-		</SelectedToolContext.Provider>
+		<SelectedToolProvider initialTool={tool}>
+			<Grid puzzle={props.puzzle} onCellClick={() => {}} autoSolvedCell={null} />)
+		</SelectedToolProvider>
 	);
 }
 

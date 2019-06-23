@@ -1,9 +1,10 @@
 import React from 'react';
 import {mount} from 'enzyme';
-import {SelectedToolContext, ToolButton} from "./ToolPicker";
 import {IToolEnabler, ToolEnabler} from "./ToolEnabler";
 import {Puzzle} from "../Puzzle";
 import {Tool} from "./index";
+import {SelectedToolProvider} from "./SelectedTool";
+import {ToolButton} from "./ToolPicker";
 
 describe('ToolPicker', () => {
 	describe('ToolButton', () => {
@@ -61,8 +62,8 @@ function renderToolButton(props: Props) {
 	const enabler = props.enabler || new ToolEnabler(Puzzle.fromRawCells([]));
 
 	return mount(
-		<SelectedToolContext.Provider value={[props.selectedTool, () => {}]}>
+		<SelectedToolProvider initialTool={props.selectedTool}>
 			<ToolButton tool={props.tool} enabler={enabler} />
-		</SelectedToolContext.Provider>
+		</SelectedToolProvider>
 	);
 }

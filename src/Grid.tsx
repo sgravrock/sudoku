@@ -3,8 +3,7 @@ import React from "react";
 import classNames from 'class-names';
 import './Grid.css';
 import {Coord, Entry, Puzzle} from "./Puzzle";
-import {SelectedToolContext} from "./Tools/ToolPicker";
-import {useCheckedContext} from "./useCheckedContext";
+import {useSelectedTool} from "./Tools/SelectedTool";
 
 const nine = Object.freeze([0, 1, 2, 3, 4, 5, 6, 7, 8]);
 
@@ -65,7 +64,7 @@ interface GridCellProps {
 }
 
 const GridCell: React.FunctionComponent<GridCellProps> = props => {
-	const [selectedTool] = useCheckedContext(SelectedToolContext);
+	const [selectedTool] = useSelectedTool();
 	const cell = props.puzzle.cell({x: props.x, y: props.y});
 
 	const isCurrentNormal = selectedTool.type === 'number' &&

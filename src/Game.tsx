@@ -1,7 +1,7 @@
-import React, {FC, useEffect, useMemo, useState} from "react";
+import React, {FC, useEffect, useMemo} from "react";
 import {Grid} from "./Grid";
-import {SelectedToolContext, ToolPicker} from "./Tools/ToolPicker";
-import {Coord, isRegularNumEntry, Puzzle} from "./Puzzle";
+import {ToolPicker} from "./Tools/ToolPicker";
+import {Puzzle} from "./Puzzle";
 import {applyTool} from "./Tools/ToolApplier";
 import {ToolEnabler} from "./Tools/ToolEnabler";
 import {Tool} from "./Tools";
@@ -10,6 +10,7 @@ import * as humanStyleSolver from "./humanStyleSolver";
 import {easyStrategies} from "./humanStyleSolver";
 import {allStrategies} from "./humanStyleSolver";
 import {GridStateProvider, useGridState} from "./GridState";
+import {SelectedToolProvider, useSelectedTool} from "./Tools/SelectedTool";
 
 interface Props {
 	puzzleData: (number | null)[];
@@ -18,14 +19,16 @@ interface Props {
 const Game: FC<Props> = props => {
 	return (
 		<GridStateProvider initializer={() => Puzzle.fromRawCells(props.puzzleData)}>
-			<GameUi />;
+			<SelectedToolProvider initialTool={{type: 'number', n: 1, pencil: false}}>
+				<GameUi />
+			</SelectedToolProvider>
 		</GridStateProvider>
 	)
 };
 
 const GameUi: FC<{}> = () => {
 	const gridState = useGridState();
-	const [tool, selectTool] = useState<Tool>({type: 'number', n: 1, pencil: false});
+	const [tool, selectTool] = useSelectedTool();
 	const puzzle = gridState.current.puzzle;
 	const toolEnabler = useMemo(() => new ToolEnabler(puzzle), [puzzle]);
 
@@ -42,8 +45,8 @@ const GameUi: FC<{}> = () => {
 	}
 
 	function redoAsPencil() {
-		const tool = gridState.redoAsPencil();
-		selectTool(tool);
+		const nextTool = gridState.redoAsPencil();
+		selectTool(nextTool);
 	}
 
 	function clearPencilMarks() {
@@ -82,45 +85,43 @@ const GameUi: FC<{}> = () => {
 	}
 
 	return (
-		<SelectedToolContext.Provider value={[tool, selectTool]}>
-			<div className="Game">
-				<div className="Game-main">
-					{puzzle.isSolved() ? <h1>Solved!</h1> : ''}
-					<Grid
-						puzzle={puzzle}
-						autoSolvedCell={gridState.current.autoSolvedCell}
-						onCellClick={onCellClick}
-					/>
-				</div>
-				<div className="Game-tools">
-					<ToolPicker enabler={toolEnabler}/>
-					<button onClick={gridState.undo}>Undo</button>
-					<button onClick={redoAsPencil}>Redo Last As Pencil</button>
-					<button onClick={clearPencilMarks}>Clear Pencil Marks</button>
-					<button onClick={gridState.reset}>Start Over</button>
+		<div className="Game">
+			<div className="Game-main">
+				{puzzle.isSolved() ? <h1>Solved!</h1> : ''}
+				<Grid
+					puzzle={puzzle}
+					autoSolvedCell={gridState.current.autoSolvedCell}
+					onCellClick={onCellClick}
+				/>
+			</div>
+			<div className="Game-tools">
+				<ToolPicker enabler={toolEnabler}/>
+				<button onClick={gridState.undo}>Undo</button>
+				<button onClick={redoAsPencil}>Redo Last As Pencil</button>
+				<button onClick={clearPencilMarks}>Clear Pencil Marks</button>
+				<button onClick={gridState.reset}>Start Over</button>
 
-					<div className="Game-hints">
-						<fieldset>
-							<legend>Hints</legend>
-							<button onClick={solveOneCell}>Solve a single cell</button>
-							<button onClick={gridState.undoUntilSolvable}>
-								Undo Until Solvable
-							</button>
-						</fieldset>
+				<div className="Game-hints">
+					<fieldset>
+						<legend>Hints</legend>
+						<button onClick={solveOneCell}>Solve a single cell</button>
+						<button onClick={gridState.undoUntilSolvable}>
+							Undo Until Solvable
+						</button>
+					</fieldset>
 
-						<fieldset>
-							<legend>Auto solve</legend>
-							<button onClick={() => autoSolve(easyStrategies)}>
-								Easy strategies
-							</button>
-							<button onClick={() => autoSolve(allStrategies)}>
-								All strategies
-							</button>
-						</fieldset>
-					</div>
+					<fieldset>
+						<legend>Auto solve</legend>
+						<button onClick={() => autoSolve(easyStrategies)}>
+							Easy strategies
+						</button>
+						<button onClick={() => autoSolve(allStrategies)}>
+							All strategies
+						</button>
+					</fieldset>
 				</div>
 			</div>
-		</SelectedToolContext.Provider>
+		</div>
 	);
 };
 
