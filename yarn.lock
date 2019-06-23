@@ -9279,7 +9279,11 @@ typescript-estree@^18.1.0:
     lodash.unescape "4.0.1"
     semver "5.5.0"
 
-typescript@3.3.3333, typescript@^3.0.3, typescript@^3.2.1:
+typescript@3.5.2:
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.5.2.tgz#a09e1dc69bc9551cadf17dba10ee42cf55e5d56c"
+
+typescript@^3.0.3, typescript@^3.2.1:
   version "3.3.3333"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.3.3333.tgz#171b2c5af66c59e9431199117a3bcadc66fdcfd6"
 
