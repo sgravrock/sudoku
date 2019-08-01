@@ -253,9 +253,9 @@ describe('Game', () => {
 			});
 
 			describe('And a non-number tool is selected', () => {
-				it('returns the currently selected tool', () => {
+				it('returns null', () => {
 					const tool: Tool = {type: 'eraser'};
-					expect(nextToolFromKeystroke(tool, key)).toEqual(tool);
+					expect(nextToolFromKeystroke(tool, key)).toBeNull();
 				});
 			});
 		}
@@ -308,9 +308,9 @@ describe('Game', () => {
 		});
 
 		describe('When the key is something else', () => {
-			it('returns the currently selected tool', () => {
+			it('returns null', () => {
 				const tool: Tool = {type: 'eraser'};
-				expect(nextToolFromKeystroke(tool, 'x')).toEqual(tool);
+				expect(nextToolFromKeystroke(tool, 'x')).toBeNull();
 			});
 		});
 	});

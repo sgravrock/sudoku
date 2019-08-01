@@ -33,7 +33,16 @@ const GameUi: FC<{}> = () => {
 	const toolEnabler = useMemo(() => new ToolEnabler(puzzle), [puzzle]);
 
 	const onKeyDown = useMemo(
-		() => (key: string) => selectTool(nextToolFromKeystroke(tool, key)),
+		() => (key: string) => {
+			const nextTool = nextToolFromKeystroke(tool, key);
+
+			if (nextTool) {
+				selectTool(nextTool);
+				return true;
+			}
+
+			return false;
+		},
 		[tool, selectTool]
 	);
 	useDocumentKeydown(onKeyDown);
@@ -126,7 +135,7 @@ const GameUi: FC<{}> = () => {
 	);
 };
 
-export function nextToolFromKeystroke(tool: Tool, key: string): Tool {
+export function nextToolFromKeystroke(tool: Tool, key: string): Tool | null {
 	if ((key === 'p' || key === ' ') && tool.type === 'number') {
 		return {...tool, pencil: !tool.pencil};
 	} else if (key >= '1' && key <= '9') {
@@ -141,15 +150,17 @@ export function nextToolFromKeystroke(tool: Tool, key: string): Tool {
 			return {type: 'number', n, pencil: false};
 		}
 	} else {
-		return tool;
+		return null;
 	}
 }
 
-function useDocumentKeydown(handler: (key: string) => void): void {
+function useDocumentKeydown(handler: (key: string) => boolean): void {
 	// Warning: there's currently no test coverage for this.
 	useEffect(() => {
 		function onKeyDown(e: KeyboardEvent) {
-			handler(e.key);
+			if (handler(e.key)) {
+				e.preventDefault();
+			}
 		}
 
 		document.addEventListener('keydown', onKeyDown);
