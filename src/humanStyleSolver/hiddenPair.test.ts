@@ -29,10 +29,9 @@ describe('hiddenPair', () => {
 
 			const expected = puzzle
 				.setCell({x: 2, y: 0}, {ns: [3, 7], pencil: true})
-				.setCell({x: 0, y: 2}, {ns: [3, 7], pencil: true});
+				.setCell({x: 0, y: 1}, {ns: [3, 7], pencil: true});
 
 			expect(markHouseHiddenPair(puzzle)).toEqual(expected);
-
 		});
 	});
 });

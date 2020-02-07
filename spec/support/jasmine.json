@@ -8,5 +8,6 @@
     "testSupport/*.ts"
   ],
   "stopSpecOnExpectationFailure": false,
+  "verboseDeprecations": true,
   "random": true
 }

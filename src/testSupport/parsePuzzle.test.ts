@@ -1,4 +1,4 @@
-import {Puzzle} from "../Puzzle";
+import {Cell, Puzzle} from "../Puzzle";
 import {parsePuzzle} from "./parsePuzzle";
 
 describe("parsePuzzle", () => {
