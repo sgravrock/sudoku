@@ -13,7 +13,7 @@ export interface PencilEntry {
 
 export type Entry = NonPencilEntry | PencilEntry;
 
-interface Cell {
+export interface Cell {
 	entry: Entry | null;
 	mutable: boolean;
 }
