@@ -41,7 +41,7 @@
     "enzyme-adapter-react-16": "^1.11.2",
     "ignore-styles": "^5.0.1",
     "jasmine": "^3.3.1",
-    "jasmine-enzyme": "../jasmine/enzyme-matchers/packages/jasmine-enzyme",
+    "jasmine-enzyme": "^7.1.2",
     "jsdom": "^13.2.0",
     "madge": "^3.4.4",
     "sudoku": "^0.0.2"
@@ -53,9 +53,7 @@
   },
   "resolutions": {
     "jasmine": "../jasmine/jasmine-npm",
-    "jasmine-core": "../jasmine/jasmine",
-    "enzyme-matchers:": "../jasmine/enzyme-matchers/packages/enzyme-matchers",
-    "jasmine-enzyme:": "../jasmine/enzyme-matchers/packages/jasmine-enzyme"
+    "jasmine-core": "../jasmine/jasmine"
   },
   "homepage": "./"
 }

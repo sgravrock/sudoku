@@ -3964,12 +3964,6 @@ enzyme-adapter-utils@^1.13.0:
     prop-types "^15.7.2"
     semver "^5.7.1"
 
-"enzyme-matchers:@../jasmine/enzyme-matchers/packages/enzyme-matchers":
-  version "7.1.2"
-  dependencies:
-    circular-json-es6 "^2.0.1"
-    deep-equal-ident "^1.1.1"
-
 enzyme-matchers@^7.1.2:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/enzyme-matchers/-/enzyme-matchers-7.1.2.tgz#d80530a61f22d28bb993dd7588abba38bd4de282"
@@ -5817,13 +5811,10 @@ istanbul-reports@^2.2.6:
 jasmine-core@../jasmine/jasmine, jasmine-core@~3.5.0:
   version "3.5.0"
 
-"jasmine-enzyme:@../jasmine/enzyme-matchers/packages/jasmine-enzyme":
+jasmine-enzyme@^7.1.2:
   version "7.1.2"
-  dependencies:
-    enzyme-matchers "^7.1.2"
-
-jasmine-enzyme@../jasmine/enzyme-matchers/packages/jasmine-enzyme:
-  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/jasmine-enzyme/-/jasmine-enzyme-7.1.2.tgz#a09ad4644841b2e402046dee5526253b961efa0f"
+  integrity sha512-4C9GeKgcJerRWBOt3nu9MAjjm5DK8kRbCBKLNWvDjbSfLWodomfjZA2lIpRcJkmof9tIfff2ZWa7DD53WLhyGA==
   dependencies:
     enzyme-matchers "^7.1.2"
 
