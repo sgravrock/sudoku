@@ -4,7 +4,8 @@ beforeEach(() => {
 	jasmine.addCustomObjectFormatter((val: any) => {
 		if (isCell(val)) {
 			if (!val.mutable) {
-				return 'cell(fixed: ' + val.entry.n + ')';
+				// TODO: fix types so the cast isn't needed
+				return 'cell(fixed: ' + (val.entry as any).n + ')';
 			} else if (!val.entry) {
 				return 'cell(empty)';
 			} else if (val.entry.pencil) {

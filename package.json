@@ -33,7 +33,7 @@
     "@types/enzyme": "^3.9.1",
     "@types/enzyme-adapter-react-16": "^1.0.5",
     "@types/ignore-styles": "^5.0.0",
-    "@types/jasmine": "^3.3.9",
+    "@types/jasmine": "^3.6.0",
     "@types/jasmine-enzyme": "^3.6.6",
     "@types/jsdom": "^12.2.2",
     "class-names": "^1.0.0",
