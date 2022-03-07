@@ -1,10 +1,10 @@
 import React from 'react';
-import {mount} from 'enzyme';
 import {IToolEnabler, ToolEnabler} from "./ToolEnabler";
 import {Puzzle} from "../Puzzle";
 import {Tool} from "./index";
 import {SelectedToolProvider} from "./SelectedTool";
 import {ToolButton} from "./ToolPicker";
+import {render} from "@testing-library/react";
 
 describe('ToolPicker', () => {
 	describe('ToolButton', () => {
@@ -12,9 +12,9 @@ describe('ToolPicker', () => {
 			it('checks the radio button', () => {
 				const selectedTool: Tool = {type: 'number', n: 1, pencil: true};
 				const tool: Tool = {type: 'number', n: 1, pencil: true};
-				const subject = renderToolButton({tool, selectedTool});
+				const {baseElement} = renderToolButton({tool, selectedTool});
 
-				expect(subject.find('input')).toHaveProp('checked', true);
+				expect(baseElement.querySelector('input')!.checked).toBeTruthy();
 			});
 		});
 
@@ -22,9 +22,9 @@ describe('ToolPicker', () => {
 			it('does not check the radio button', () => {
 				const selectedTool: Tool = {type: 'number', n: 1, pencil: true};
 				const tool: Tool = {type: 'number', n: 2, pencil: true};
-				const subject = renderToolButton({tool, selectedTool});
+				const {baseElement} = renderToolButton({tool, selectedTool});
 
-				expect(subject.find('input')).toHaveProp('checked', false);
+				expect(baseElement.querySelector('input')!.checked).toBeFalsy();
 			});
 		});
 
@@ -34,9 +34,9 @@ describe('ToolPicker', () => {
 				const enabler: IToolEnabler = {
 					isEnabled: t => t !== tool
 				};
-				const subject = renderToolButton({tool, enabler, selectedTool: tool});
+				const {baseElement} = renderToolButton({tool, enabler, selectedTool: tool});
 
-				expect(subject.find('input')).toHaveProp('disabled', true);
+				expect(baseElement.querySelector('input')!.disabled).toBeTruthy();
 			});
 
 			it('replaces the button with a checkmark', () => {
@@ -44,9 +44,9 @@ describe('ToolPicker', () => {
 				const enabler: IToolEnabler = {
 					isEnabled: t => t !== tool
 				};
-				const subject = renderToolButton({tool, enabler, selectedTool: tool});
+				const {baseElement} = renderToolButton({tool, enabler, selectedTool: tool});
 
-				expect(subject.find('.ToolButton')).toHaveClassName('ToolButton-disabled');
+				expect(baseElement.querySelector('.ToolButton')).toHaveClass('ToolButton-disabled');
 			});
 		});
 	});
@@ -61,7 +61,7 @@ interface Props {
 function renderToolButton(props: Props) {
 	const enabler = props.enabler || new ToolEnabler(Puzzle.fromRawCells([]));
 
-	return mount(
+	return render(
 		<SelectedToolProvider initialTool={props.selectedTool}>
 			<ToolButton tool={props.tool} enabler={enabler} />
 		</SelectedToolProvider>

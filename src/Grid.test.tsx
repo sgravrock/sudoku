@@ -1,9 +1,9 @@
 import React from 'react';
-import {mount} from 'enzyme';
 import {Grid} from "./Grid";
 import {Puzzle} from "./Puzzle";
 import {Tool} from "./Tools";
 import {SelectedToolProvider} from "./Tools/SelectedTool";
+import {render} from "@testing-library/react";
 
 describe('Grid', () => {
 	it('renders the specified puzzle', () => {
@@ -18,10 +18,12 @@ describe('Grid', () => {
 			null, null, null, null, null, null, null, 8, null,
 			null, null, null, null, null, null, null, null, 9
 		]);
-		const subject = renderGrid({puzzle});
-		const cellTexts = subject.find('tr').map(
-			row => row.find('td').map(cell => cell.text())
-		);
+		const {baseElement} = renderGrid({puzzle});
+		const cellTexts = Array.from(baseElement.querySelectorAll('tr'))
+			.map(row => {
+				return Array.from(row.querySelectorAll('td'))
+					.map(cell => cell.textContent);
+			});
 		expect(cellTexts).toEqual([
 			['1', '', '', '', '', '', '', '', ''],
 			['', '2', '', '', '', '', '', '', ''],
@@ -47,10 +49,10 @@ describe('Grid', () => {
 			null, null, null, null, null, null, null, null, null,
 			null, null, null, null, null, null, null, null, null
 		]);
-		const subject = renderGrid({puzzle});
-		const cells = subject.find('td');
-		expect(cells.at(0)).toHaveClassName('GridCell-immutable');
-		expect(cells.at(1)).not.toHaveClassName('GridCell-immutable');
+		const {baseElement} = renderGrid({puzzle});
+		const cells = baseElement.querySelectorAll('td');
+		expect(cells[0]).toHaveClass('GridCell-immutable');
+		expect(cells[1]).not.toHaveClass('GridCell-immutable');
 	});
 
 	it('allows line-breaking between pencil marks', () => {
@@ -65,9 +67,9 @@ describe('Grid', () => {
 			null, null, null, null, null, null, null, null, null,
 			null, null, null, null, null, null, null, null, null
 		]).setCell({x: 0, y: 0}, {ns: [1, 2, 3], pencil: true});
-		const subject = renderGrid({puzzle});
-		const cell = subject.find('td').at(0);
-		expect(cell.text())
+		const {baseElement} = renderGrid({puzzle});
+		const cell = baseElement.querySelector('td');
+		expect(cell!.textContent)
 			.withContext('Should have zero-width spaces')
 			.toEqual('(1,\u200b2,\u200b3)');
 	});
@@ -85,11 +87,11 @@ describe('Grid', () => {
 			null, null, null, null, null, null, null, null, null
 		]).setCell({x: 0, y: 0}, {ns: [1], pencil: true});
 		const tool = {type: 'number', n: 1, pencil: true};
-		const subject = renderGrid({puzzle, tool});
-		const cells = subject.find('td');
-		expect(cells.at(0)).toHaveClassName('GridCell-current-pencil');
-		expect(cells.at(0)).not.toHaveClassName('GridCell-current');
-		expect(cells.at(1)).not.toHaveClassName('GridCell-current-pencil');
+		const {baseElement} = renderGrid({puzzle, tool});
+		const cells = baseElement.querySelectorAll('td');
+		expect(cells[0]).toHaveClass('GridCell-current-pencil');
+		expect(cells[0]).not.toHaveClass('GridCell-current');
+		expect(cells[1]).not.toHaveClass('GridCell-current-pencil');
 	});
 });
 
@@ -100,7 +102,7 @@ interface Props {
 
 function renderGrid(props: Props) {
 	const tool = props.tool || arbitraryTool();
-	return mount(
+	return render(
 		<SelectedToolProvider initialTool={tool}>
 			<Grid puzzle={props.puzzle} onCellClick={() => {}} autoSolvedCell={null} />)
 		</SelectedToolProvider>
