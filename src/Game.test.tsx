@@ -7,6 +7,7 @@ import * as humanStyleSolver from './humanStyleSolver';
 import {Grid} from "./Grid";
 import {SingleMoveResult, Strategy} from "./humanStyleSolver";
 import {parsePuzzle} from "./testSupport/parsePuzzle";
+import {Puzzle} from "./Puzzle";
 
 
 describe('Game', () => {
@@ -30,10 +31,10 @@ describe('Game', () => {
 	});
 
 	it('highlights cells with the currently selected number', () => {
-		const puzzle = [...arbitraryPuzzle];
-		puzzle[0] = 2;
-		puzzle[1] = 3;
-		const subject = renderSubject({puzzle});
+		const puzzleData = [...arbitraryPuzzle];
+		puzzleData[0] = 2;
+		puzzleData[1] = 3;
+		const subject = renderSubject({puzzleData});
 		const cells = () => subject.find('.Grid td');
 
 		selectRegularNumTool(subject, 2);
@@ -48,9 +49,9 @@ describe('Game', () => {
 	describe('When a grid cell is clicked', () => {
 		describe('With a number tool selected', () => {
 			it('fills the cell with the selected number', () => {
-				const puzzle = [...arbitraryPuzzle];
-				puzzle[0] = null;
-				const subject = renderSubject({puzzle});
+				const puzzleData = [...arbitraryPuzzle];
+				puzzleData[0] = null;
+				const subject = renderSubject({puzzleData});
 
 				selectRegularNumTool(subject, 1);
 				const cell = clickFirstCell(subject);
@@ -58,9 +59,9 @@ describe('Game', () => {
 			});
 
 			it('does not change cells with given values', () => {
-				const puzzle = [...arbitraryPuzzle];
-				puzzle[0] = 2;
-				const subject = renderSubject({puzzle});
+				const puzzleData = [...arbitraryPuzzle];
+				puzzleData[0] = 2;
+				const subject = renderSubject({puzzleData});
 
 				selectRegularNumTool(subject, 1);
 				const cell = clickFirstCell(subject);
@@ -70,9 +71,9 @@ describe('Game', () => {
 
 		describe('With a pencil tool selected', () => {
 			it('pencils in the selected number', () => {
-				const puzzle = [...arbitraryPuzzle];
-				puzzle[0] = null;
-				const subject = renderSubject({puzzle});
+				const puzzleData = [...arbitraryPuzzle];
+				puzzleData[0] = null;
+				const subject = renderSubject({puzzleData});
 
 				selectPencilTool(subject, 1);
 				const cell = clickFirstCell(subject);
@@ -80,9 +81,9 @@ describe('Game', () => {
 			});
 
 			it('allows multiple pencil marks in the same cell', () => {
-				const puzzle = [...arbitraryPuzzle];
-				puzzle[0] = null;
-				const subject = renderSubject({puzzle});
+				const puzzleData = [...arbitraryPuzzle];
+				puzzleData[0] = null;
+				const subject = renderSubject({puzzleData});
 
 				selectPencilTool(subject, 1);
 				clickFirstCell(subject);
@@ -92,9 +93,9 @@ describe('Game', () => {
 			});
 
 			it('does not change cells with given values', () => {
-				const puzzle = [...arbitraryPuzzle];
-				puzzle[0] = 6;
-				const subject = renderSubject({puzzle});
+				const puzzleData = [...arbitraryPuzzle];
+				puzzleData[0] = 6;
+				const subject = renderSubject({puzzleData});
 
 				selectPencilTool(subject, 1);
 				const cell = clickFirstCell(subject);
@@ -102,9 +103,9 @@ describe('Game', () => {
 			});
 
 			it('does not change cells with entered regular numbers', () => {
-				const puzzle = [...arbitraryPuzzle];
-				puzzle[0] = null;
-				const subject = renderSubject({puzzle});
+				const puzzleData = [...arbitraryPuzzle];
+				puzzleData[0] = null;
+				const subject = renderSubject({puzzleData});
 
 				enterRegularNumInFirstCell(subject, 1);
 				selectPencilTool(subject, 2);
@@ -116,9 +117,9 @@ describe('Game', () => {
 
 		describe('With the erase tool selected', () => {
 			it('erases the cell', () => {
-				const puzzle = [...arbitraryPuzzle];
-				puzzle[0] = null;
-				const subject = renderSubject({puzzle});
+				const puzzleData = [...arbitraryPuzzle];
+				puzzleData[0] = null;
+				const subject = renderSubject({puzzleData});
 
 				selectRegularNumTool(subject, 1);
 				clickFirstCell(subject);
@@ -129,9 +130,9 @@ describe('Game', () => {
 			});
 
 			it('does not erase cells with given values', () => {
-				const puzzle = [...arbitraryPuzzle];
-				puzzle[0] = 1;
-				const subject = renderSubject({puzzle});
+				const puzzleData = [...arbitraryPuzzle];
+				puzzleData[0] = 1;
+				const subject = renderSubject({puzzleData});
 
 				selectEraserTool(subject);
 				const cell = clickFirstCell(subject);
@@ -141,9 +142,9 @@ describe('Game', () => {
 	});
 
 	it('supports undo', () => {
-		const puzzle = [...arbitraryPuzzle];
-		puzzle[0] = null;
-		const subject = renderSubject({puzzle});
+		const puzzleData = [...arbitraryPuzzle];
+		puzzleData[0] = null;
+		const subject = renderSubject({puzzleData});
 
 		enterRegularNumInFirstCell(subject, 1);
 		eraseFirstCell(subject);
@@ -159,9 +160,9 @@ describe('Game', () => {
 	});
 
 	it('can reset to the initial state', () => {
-		const puzzle = [...arbitraryPuzzle];
-		puzzle[0] = null;
-		const subject = renderSubject({puzzle});
+		const puzzleData = [...arbitraryPuzzle];
+		puzzleData[0] = null;
+		const subject = renderSubject({puzzleData});
 
 		enterRegularNumInFirstCell(subject, 1);
 		eraseFirstCell(subject);
@@ -175,7 +176,7 @@ describe('Game', () => {
 	});
 
 	it('disables numbers that are fully entered', () => {
-		const puzzle = [
+		const puzzleData = [
 			null, 1, 1, 1, 1, 1, 1, 1, 1,
 			null, null, null, null, null, null, null, null, null,
 			null, null, null, null, null, null, null, null, null,
@@ -187,7 +188,7 @@ describe('Game', () => {
 			null, null, null, null, null, null, null, null, null,
 		];
 
-		const subject = renderSubject({puzzle});
+		const subject = renderSubject({puzzleData});
 
 		enterRegularNumInFirstCell(subject, 1);
 		expect(firstCell(subject).text()).toEqual('1');
@@ -196,7 +197,7 @@ describe('Game', () => {
 	});
 
 	it('does not disable numbers when some entries are pencil marks', () => {
-		const puzzle = [
+		const puzzleData = [
 			null, 1, 1, 1, 1, 1, 1, 1, 1,
 			null, null, null, null, null, null, null, null, null,
 			null, null, null, null, null, null, null, null, null,
@@ -208,7 +209,7 @@ describe('Game', () => {
 			null, null, null, null, null, null, null, null, null,
 		];
 
-		const subject = renderSubject({puzzle});
+		const subject = renderSubject({puzzleData});
 
 		enterPencilMarkInFirstCell(subject, 1);
 		expect(regularNumButton(subject, 1).prop('disabled')).toBeFalsy();
@@ -216,7 +217,7 @@ describe('Game', () => {
 	});
 
 	it('shows "Solved! when the puzzle is correctly solved', () => {
-		const puzzle = [
+		const puzzleData = [
 			null, 3, 1, 9, 4, 2, 7, 5, 6,
 			9, 4, 5, 6, 7, 1, 3, 2, 8,
 			7, 6, 2, 3, 5, 8, 9, 4, 1,
@@ -227,7 +228,7 @@ describe('Game', () => {
 			5, 7, 9, 8, 6, 3, 4, 1, 2,
 			1, 8, 3, 4, 2, 7, 6, 9, 5
 		];
-		const subject = renderSubject({puzzle});
+		const subject = renderSubject({puzzleData});
 
 		enterRegularNumInFirstCell(subject, 1);
 		expect(subject.text()).not.toContain('Solved!');
@@ -317,7 +318,7 @@ describe('Game', () => {
 
 	describe('When the "Undo Until Solvable" button is clicked', () => {
 		it('reverts to the last state with no errors', () => {
-			const puzzle = [
+			const puzzleData = [
 				null, null, 1, 9, 4, 2, 7, 5, 6,
 				9, 4, 5, 6, 7, 1, 3, 2, 8,
 				7, 6, 2, 3, 5, 8, 9, 4, 1,
@@ -328,7 +329,7 @@ describe('Game', () => {
 				5, 7, 9, 8, 6, 3, 4, 1, 2,
 				1, 8, 3, 4, 2, 7, 6, 9, 5
 			];
-			const subject = renderSubject({puzzle});
+			const subject = renderSubject({puzzleData});
 
 			enterRegularNum(subject, 8, 0);
 			enterRegularNum(subject, 8, 1);
@@ -341,7 +342,7 @@ describe('Game', () => {
 
 	describe('When the "Clear Pencil Marks" button is clicked', () => {
 		it('removes all pencil marks', () => {
-			const puzzle = [
+			const puzzleData = [
 				null, null, null, 9, 4, 2, 7, 5, 6,
 				9, 4, 5, 6, 7, 1, 3, 2, 8,
 				7, 6, 2, 3, 5, 8, 9, 4, 1,
@@ -352,7 +353,7 @@ describe('Game', () => {
 				5, 7, 9, 8, 6, 3, 4, 1, 2,
 				1, 8, 3, 4, 2, 7, 6, 9, 5
 			];
-			const subject = renderSubject({puzzle});
+			const subject = renderSubject({puzzleData});
 
 			enterRegularNum(subject, 8, 0);
 			enterPencilMark(subject, 8, 1);
@@ -367,7 +368,7 @@ describe('Game', () => {
 
 	describe('When the "Redo Last As Pencil" button is clicked', () => {
 		it('undoes the previous entry and repeats it as a pencil mark', () => {
-			const subject = renderSubject({puzzle: arbitraryPuzzle});
+			const subject = renderSubject({});
 
 			enterRegularNum(subject, 8, 0);
 			enterPencilMark(subject, 7, 1);
@@ -379,7 +380,7 @@ describe('Game', () => {
 		});
 
 		it('switches to the pencil tool', () => {
-			const subject = renderSubject({puzzle: arbitraryPuzzle});
+			const subject = renderSubject({});
 
 			enterRegularNum(subject, 8, 0);
 			findButtonByText(subject, 'Redo Last As Pencil').simulate('click');
@@ -413,8 +414,7 @@ describe('Game', () => {
 			it('attempts to solve one cell', () => {
 				const input = [...arbitraryPuzzle];
 				input[0] = null;
-				const subject = renderSubject({puzzle: input});
-				const puzzleBeforeSolve = subject.find(Grid).prop('puzzle');
+				const puzzleBeforeSolve = Puzzle.fromRawCells(input);
 				const solveResult: SingleMoveResult = {
 					puzzle: puzzleBeforeSolve.setCell(
 						{x: 0, y: 0},
@@ -423,35 +423,44 @@ describe('Game', () => {
 					changedCell: {x: 0, y: 0},
 					strategy: ''
 				};
-				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue(solveResult);
+				const solver = jasmine.createSpyObj('solver',
+					['solve', 'solveOneCell']);
+				solver.solveOneCell.and.returnValue(solveResult);
+				const subject = renderSubject({
+					puzzle: puzzleBeforeSolve,
+					solver
+				});
 
 				solveOneCell(subject);
 
-				expect(humanStyleSolver.solveOneCell).toHaveBeenCalledWith(
+				expect(solver.solveOneCell).toHaveBeenCalledWith(
 					puzzleBeforeSolve
 				);
 				expect(subject.find(Grid)).toHaveProp('puzzle', solveResult.puzzle);
 			});
 
 			it('shows an alert when no cells can be solved', () => {
-				const subject = renderSubject({});
+				const solver = jasmine.createSpyObj('solver',
+					['solve', 'solveOneCell']);
+				solver.solveOneCell.and.returnValue(null);
+				const subject = renderSubject({solver});
 				const puzzleBeforeSolve = subject.find(Grid).prop('puzzle');
-				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue(null);
 				spyOn(window, 'alert');
 
 				solveOneCell(subject);
 
-				expect(subject.find(Grid)).toHaveProp('puzzle', puzzleBeforeSolve);
 				expect(window.alert).toHaveBeenCalledWith('Could not solve any cells.');
 			});
 
 			it('tells the user what was done', () => {
-				const subject = renderSubject({});
-				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue({
+				const solver = jasmine.createSpyObj('solver',
+					['solve', 'solveOneCell']);
+				solver.solveOneCell.and.returnValue({
 					puzzle: parsePuzzle(''),
 					strategy: 'Naked Single',
 					changedCell: {x: 3, y: 5}
 				});
+				const subject = renderSubject({solver});
 				spyOn(window, 'alert');
 
 				solveOneCell(subject);
@@ -463,12 +472,14 @@ describe('Game', () => {
 			});
 
 			it('highlights the solved cell', () => {
-				const subject = renderSubject({});
-				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue({
+				const solver = jasmine.createSpyObj('solver',
+					['solve', 'solveOneCell']);
+				solver.solveOneCell.and.returnValue({
 					puzzle: parsePuzzle(''),
 					strategy: '',
 					changedCell: {x: 3, y: 0}
 				});
+				const subject = renderSubject({solver});
 
 				solveOneCell(subject);
 
@@ -476,12 +487,14 @@ describe('Game', () => {
 			});
 
 			it('updates the highlight across moves and undos', () => {
-				const subject = renderSubject({});
-				spyOn(humanStyleSolver, 'solveOneCell').and.returnValue({
+				const solver = jasmine.createSpyObj('solver',
+					['solve', 'solveOneCell']);
+				solver.solveOneCell.and.returnValue({
 					puzzle: parsePuzzle(''),
 					strategy: '',
 					changedCell: {x: 3, y: 0}
 				});
+				const subject = renderSubject({solver});
 
 				solveOneCell(subject);
 				selectRegularNumTool(subject, 1);
@@ -500,21 +513,23 @@ describe('Game', () => {
 		function testAutoSolve(buttonText: string, expectedStrategies: Strategy[]) {
 			const input = [...arbitraryPuzzle];
 			input[0] = null;
-			const subject = renderSubject({puzzle: input});
-			const puzzleBeforeSolve = subject.find(Grid).prop('puzzle');
+			const puzzleBeforeSolve = Puzzle.fromRawCells(input);
+			const solver = jasmine.createSpyObj('solver',
+				['solve', 'solveOneCell']);
 			const solveResult = {
 				solved: false,
 				endState: puzzleBeforeSolve.setCell({x: 0, y: 0}, {n: 1, pencil: false})
 			};
-			spyOn(humanStyleSolver, 'solve').and.returnValue(solveResult);
+			solver.solve.and.returnValue(solveResult);
+			const subject = renderSubject({puzzle: puzzleBeforeSolve, solver});
 
 			findButtonByText(subject, buttonText).simulate('click');
 
-			expect(humanStyleSolver.solve).toHaveBeenCalledWith(
+			expect(solver.solve).toHaveBeenCalledWith(
 				puzzleBeforeSolve,
 				expectedStrategies
 			);
-			expect(subject.find(Grid)).toHaveProp('puzzle', solveResult.endState);
+			expect(cell(subject, 0)).toHaveText('1');
 		}
 	});
 });
@@ -588,11 +603,22 @@ function cell(subject: ReactWrapper, cellIx: number): ReactWrapper {
 }
 
 interface OptionalProps {
-	puzzle?: (number | null)[];
+	puzzleData?: (number | null)[];
+	puzzle?: Puzzle;
+	solver?: {
+		solve: typeof humanStyleSolver.solve;
+		solveOneCell: typeof humanStyleSolver.solveOneCell;
+	};
 }
 
 function renderSubject(props: OptionalProps) {
-	return mount(<Game puzzleData={props.puzzle || arbitraryPuzzle} />);
+	const puzzle = props.puzzle || Puzzle.fromRawCells(props.puzzleData || arbitraryPuzzle);
+	return mount(
+		<Game
+			puzzle={puzzle}
+			solver={props.solver || humanStyleSolver}
+		/>
+	);
 }
 
 const arbitraryPuzzle: (number | null)[] = [

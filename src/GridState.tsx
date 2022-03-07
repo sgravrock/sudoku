@@ -5,7 +5,7 @@ import {Tool} from "./Tools";
 import {applyTool} from "./Tools/ToolApplier";
 
 interface GridStateProviderProps {
-	initializer: () => Puzzle;
+	initialState: Puzzle;
 }
 
 interface GridHistoryEntry {
@@ -27,7 +27,7 @@ const GridStateContext = createContext<GridState>(null!);
 const GridStateProvider: FC<GridStateProviderProps> = props => {
 	const [gridStates, setGridStates] = useState<GridHistoryEntry[]>(() => [
 		{
-			puzzle: props.initializer(),
+			puzzle: props.initialState,
 			autoSolvedCell: null
 		}
 	]);

@@ -3,7 +3,7 @@ import * as sudoku from './oneValuedSudoku';
 import './App.css';
 import {Game} from "./Game";
 import {Puzzle} from "./Puzzle";
-import {easyStrategies, solve} from "./humanStyleSolver";
+import * as humanStyleSolver from "./humanStyleSolver";
 
 enum Difficulty {
 	Easy = 'Easy',
@@ -27,7 +27,7 @@ const App: React.FunctionComponent<{}> = props => {
 	const [puzzle, setPuzzle] = useState<RawPuzzleData | null>(null);
 
 	if (puzzle) {
-		return <Game puzzleData={puzzle} />;
+		return <Game puzzle={Puzzle.fromRawCells(puzzle)} solver={humanStyleSolver} />;
 	}
 
 	return <DifficultyPicker onChoice={d => setPuzzle(puzzleWithDifficulty(d))} />;
@@ -64,7 +64,7 @@ function easyPuzzle(): RawPuzzleData {
 
 function isEasy(rawCells: RawPuzzleData) {
 	const puzzle = Puzzle.fromRawCells(rawCells);
-	return solve(puzzle, easyStrategies).solved;
+	return humanStyleSolver.solve(puzzle, humanStyleSolver.easyStrategies).solved;
 
 }
 

@@ -12,21 +12,31 @@ import {allStrategies} from "./humanStyleSolver";
 import {GridStateProvider, useGridState} from "./GridState";
 import {SelectedToolProvider, useSelectedTool} from "./Tools/SelectedTool";
 
-interface Props {
-	puzzleData: (number | null)[];
+interface GameProps {
+	puzzle: Puzzle;
+	solver: Solver;
 }
 
-const Game: FC<Props> = props => {
+interface Solver {
+	solve: typeof humanStyleSolver.solve;
+	solveOneCell: typeof humanStyleSolver.solveOneCell;
+}
+
+const Game: FC<GameProps> = props => {
 	return (
-		<GridStateProvider initializer={() => Puzzle.fromRawCells(props.puzzleData)}>
+		<GridStateProvider initialState={props.puzzle}>
 			<SelectedToolProvider initialTool={{type: 'number', n: 1, pencil: false}}>
-				<GameUi />
+				<GameUi solver={props.solver} />
 			</SelectedToolProvider>
 		</GridStateProvider>
 	)
 };
 
-const GameUi: FC<{}> = () => {
+interface GameUiProps {
+	solver: Solver;
+}
+
+const GameUi: FC<GameUiProps> = props => {
 	const gridState = useGridState();
 	const [tool, selectTool] = useSelectedTool();
 	const puzzle = gridState.current.puzzle;
@@ -67,7 +77,7 @@ const GameUi: FC<{}> = () => {
 	}
 
 	function autoSolve(strategies: humanStyleSolver.Strategy[]) {
-		const result = humanStyleSolver.solve(puzzle, strategies);
+		const result = props.solver.solve(puzzle, strategies);
 		gridState.push({
 			puzzle: result.endState,
 			autoSolvedCell: null
@@ -75,7 +85,7 @@ const GameUi: FC<{}> = () => {
 	}
 
 	function solveOneCell() {
-		const result = humanStyleSolver.solveOneCell(puzzle);
+		const result = props.solver.solveOneCell(puzzle);
 
 		if (result) {
 			gridState.push({
