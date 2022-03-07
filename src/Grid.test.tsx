@@ -86,7 +86,7 @@ describe('Grid', () => {
 			null, null, null, null, null, null, null, null, null,
 			null, null, null, null, null, null, null, null, null
 		]).setCell({x: 0, y: 0}, {ns: [1], pencil: true});
-		const tool = {type: 'number', n: 1, pencil: true};
+		const tool: Tool = {type: 'number', n: 1, pencil: true};
 		const {baseElement} = renderGrid({puzzle, tool});
 		const cells = baseElement.querySelectorAll('td');
 		expect(cells[0]).toHaveClass('GridCell-current-pencil');
