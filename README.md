@@ -4,7 +4,7 @@
 
 1. Clone the repository and run `npm install` if you haven't already done so.
 2. Run `npm run build`.
-3. Copy the contents of the `build` directory to a web server.
+3. Copy the contents of the `dist` directory to a web server.
 
 ## Local development
 
